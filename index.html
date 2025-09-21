@@ -36,6 +36,14 @@
     />
     <link rel="manifest" href="favicon_io/site.webmanifest" />
 
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- css -->
     <link rel="stylesheet" href="style.css" />
 
@@ -45,6 +53,40 @@
     <title>UMIT</title>
   </head>
   <body>
-    
+    <nav>
+      <div class="navbar navbar-container">
+        <div class="left-navbar">
+          <img src="./img/only_logo.png" alt="" class="navbar-brand-img" />
+          <h1 class="navbar-brand-h1">UMIT</h1>
+        </div>
+        <div class="center-navbar">
+          <a href="#home" class="nav-link">Главная</a>
+          <a href="#product" class="nav-link">Каталог</a>
+          <a href="#review" class="nav-link">Отзывы</a>
+          <a href="#contact" class="nav-link">Контакты</a>
+        </div>
+        <div class="right-navbar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <i class="fa-solid fa-user"></i>
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+      </div>
+    </nav>
+    <div class="place-for-navbar-space"></div>
+    <section id="home" class="home-section">
+      <div class="home-container">
+        <div class="center-home">
+          <h2 class="home-h2">Новая<br> коллекция</h2>
+          <div class="center-home-text">
+            <h5 class="center-home-text-h5">мужская коллекция</h5>
+            <hr>
+            <div class="buttons-home">
+              <a href="#product" class="btn btn-primary">Смотреть каталог</a>
+              <a href="#about" class="btn btn-secondary">О бренде</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </body>
 </html>
