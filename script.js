@@ -41,3 +41,14 @@ closeBtn.addEventListener("click", () => {
   showMoreBtn.style.display = "inline-block";
   closeBtn.style.display = "none";
 });
+
+// review
+function openReviewModal() {
+  document.getElementById("review-modal").style.display = "flex";
+  document.body.classList.add("modal-open"); // блокируем сайт
+}
+
+function closeReviewModal() {
+  document.getElementById("review-modal").style.display = "none";
+  document.body.classList.remove("modal-open"); // разблокируем сайт
+}
