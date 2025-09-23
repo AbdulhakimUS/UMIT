@@ -180,6 +180,9 @@ nav {
   left: -10px;
 }
 
+.cart-icon{
+  text-decoration: none;
+}
 
 .home-container {
   margin: 0;
@@ -745,3 +748,4 @@ body.modal-open {
   border-radius: 50%;
   margin: 0 10px; /* отступы справа и слева */
 }
+

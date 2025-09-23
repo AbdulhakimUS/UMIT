@@ -4,64 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- font-awesome cdn -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-
-    <!-- favicon (ICO в корне для надёжности) -->
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-
-    <!-- дополнительные favicon в папке -->
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="favicon_io/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="favicon_io/favicon-16x16.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="favicon_io/apple-touch-icon.png"
-    />
-    <link rel="manifest" href="favicon_io/site.webmanifest" />
-
     <!-- google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
 
-    <!-- css -->
     <link rel="stylesheet" href="shop.css" />
-
-    <!-- js -->
     <script src="shop.js" defer></script>
 
-    <title>UMIT</title>
+    <title>UMIT — Корзина</title>
   </head>
   <body>
     <h1>Ваша корзина</h1>
-    <div id="cart-items"></div>
-    <div style="text-align: center">
-      <button id="checkout">Заказать</button>
-      <button id="clearCart">Очистить корзину</button>
+
+    <div id="cart-items" class="cart-container"></div>
+
+    <div class="cart-buttons">
+      <button id="orderBtn">Заказать</button>
+      <button id="clearBtn">Очистить корзину</button>
+      <button id="backBtn">Назад</button>
     </div>
-    <p
-      id="totalPrice"
-      style="text-align: center; font-weight: bold; margin-top: 10px"
-    ></p>
+
+    <p id="totalPrice"></p>
   </body>
 </html>
