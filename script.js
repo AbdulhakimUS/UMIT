@@ -10,36 +10,45 @@ window.addEventListener("scroll", () => {
 });
 
 // product
-const products = document.querySelectorAll(".product");
-const showMoreBtn = document.getElementById("showMoreBtn");
-const closeBtn = document.getElementById("closeBtn");
+document.addEventListener("DOMContentLoaded", () => {
+  const products = Array.from(document.querySelectorAll(".product"));
+  const showMoreBtn = document.getElementById("showMoreBtn");
+  const closeBtn = document.getElementById("closeBtn");
 
-let visibleCount = 4; // показываем первые 4
+  let visibleCount = 4; // показываем первые 4
 
-function showProducts() {
-  for (let i = 0; i < visibleCount && i < products.length; i++) {
-    products[i].style.display = "block";
+  function updateProducts() {
+    products.forEach((p, i) => {
+      p.classList.toggle("show", i < visibleCount);
+    });
+
+    // кнопки
+    showMoreBtn.style.display =
+      visibleCount >= products.length ? "none" : "inline-block";
+    closeBtn.style.display = visibleCount > 4 ? "inline-block" : "none";
   }
-}
 
-showProducts(); // показать первые 4
-
-showMoreBtn.addEventListener("click", () => {
-  visibleCount += 4;
-  showProducts();
-  closeBtn.style.display = "inline-block"; // сразу показываем кнопку закрыть
-  if (visibleCount >= products.length) {
-    showMoreBtn.style.display = "none";
-  }
-});
-
-closeBtn.addEventListener("click", () => {
-  visibleCount = 4;
-  products.forEach((p, i) => {
-    p.style.display = i < 4 ? "block" : "none";
+  showMoreBtn.addEventListener("click", () => {
+    visibleCount = Math.min(visibleCount + 4, products.length);
+    updateProducts();
+    // опционально — плавно прокрутить к новым товарам
+    const lastVisible =
+      products[Math.min(visibleCount - 1, products.length - 1)];
+    if (lastVisible)
+      lastVisible.scrollIntoView({ behavior: "smooth", block: "end" });
   });
-  showMoreBtn.style.display = "inline-block";
-  closeBtn.style.display = "none";
+
+  closeBtn.addEventListener("click", () => {
+    visibleCount = 4;
+    updateProducts();
+    // опционально — прокрутка к началу каталога
+    document
+      .getElementById("catalog-section")
+      .scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  // initial render
+  updateProducts();
 });
 
 // review
