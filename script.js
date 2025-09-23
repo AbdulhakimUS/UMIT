@@ -61,3 +61,15 @@ function closeReviewModal() {
   document.getElementById("review-modal").style.display = "none";
   document.body.classList.remove("modal-open"); // разблокируем сайт
 }
+
+// preloader
+window.addEventListener("load", function () {
+  const preloader = document.getElementById("preloader");
+  setTimeout(() => {
+    preloader.classList.add("hidden");
+  }, 500); // задержка для плавного ухода
+});
+window.addEventListener("load", function () {
+  // всегда скроллит к самому верху
+  window.scrollTo({ top: 0, behavior: "auto" });
+});
