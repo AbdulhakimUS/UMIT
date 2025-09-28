@@ -1,104 +1,184 @@
 body {
   font-family: 'Montserrat', Arial, sans-serif;
-  background: #f5f5f5;
+  background: #111;
   margin: 0;
   padding: 20px;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  font-weight: 700;
+  color: #cc9800;
 }
 
-/* Корзина */
+/* Контейнер корзины */
 .cart-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  max-width: 1000px;
+  margin: 0 auto;
+  gap: 20px;
   justify-items: center;
 }
 
+/* Карточка товара */
 .cart-card {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  width: 220px;
-  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  width: 300px;         /* ширина */
+  aspect-ratio: 4 / 3;  /* пропорция 4:3 */
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
 }
 
+.cart-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Фото */
 .cart-card img {
   width: 100%;
-  border-radius: 8px;
+  height: 55%;
+  object-fit: cover;
+  border-radius: 12px;
 }
 
+/* Название */
 .cart-card .product-title {
   font-weight: 600;
   margin: 10px 0 5px;
   text-align: center;
+  color: #222;
+  font-size: 16px;
 }
 
+/* Цена */
 .cart-card .product-price {
   font-weight: bold;
   margin-bottom: 10px;
+  text-align: center;
+  font-size: 18px;
+  color: #cc9800;
 }
 
 /* Выбор размера */
 .size-select {
-  width: 90%;
-  padding: 5px;
-  border-radius: 6px;
-  margin-bottom: 5px;
+  width: 100%;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  font-family: inherit;
 }
 
-/* Счетчик количества */
+/* Кол-во */
 .quantity-controls {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 5px;
+  gap: 10px;
 }
 
 .quantity-controls button {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   border: none;
-  border-radius: 6px;
-  background: #ef1596;
+  border-radius: 8px;
+  background: #cc9800;
   color: white;
   font-size: 18px;
   cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.quantity-controls button:hover {
+  background: #a87400;
+  transform: scale(1.05);
 }
 
 .quantity-controls span {
   font-size: 16px;
-  width: 25px;
+  font-weight: 600;
+  min-width: 30px;
   text-align: center;
 }
 
-/* Кнопки */
-.cart-buttons {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.cart-buttons button {
-  padding: 10px 20px;
-  margin: 5px;
+/* Кнопка удаления (мусорка) */
+.remove-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(220, 53, 69, 0.1);
   border: none;
-  border-radius: 8px;
+  border-radius: 50%;
+  padding: 8px;
   cursor: pointer;
+  color: #dc3545;
+  font-size: 18px;
+  transition: 0.3s;
 }
 
-#orderBtn { background: #28a745; color: white; }
-#clearBtn { background: #dc3545; color: white; }
-#backBtn { background: #333; color: #fff; }
+.remove-btn:hover {
+  background: rgba(220, 53, 69, 0.2);
+  transform: scale(1.15);
+}
 
+/* Блок кнопок */
+.cart-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+/* Кнопка "Заказать" */
+#orderBtn {
+  background: #cc9800;
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+#orderBtn:hover {
+  background: #a87400;
+}
+
+/* Кнопка "Назад" */
+#backBtn {
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#backBtn:hover {
+  background: #555;
+}
+
+/* Общая сумма */
 #totalPrice {
   text-align: center;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 15px;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 0.5px;
 }
