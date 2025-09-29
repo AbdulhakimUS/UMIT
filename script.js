@@ -163,3 +163,33 @@ function loadProfile() {
   if (saved.address) document.getElementById("address").value = saved.address;
   if (saved.extra) document.getElementById("extra").value = saved.extra;
 }
+
+// ------------------- Добавление товара в корзину из каталога -------------------
+document.addEventListener("click", (e) => {
+  const cart = getCart();
+
+  // Добавление товара
+  const addBtn = e.target.closest(".add-to-cart");
+  if (addBtn) {
+    const productEl = addBtn.closest(".product");
+    if (!productEl) return;
+
+    const name =
+      productEl.querySelector(".product-title")?.innerText || "Без названия";
+    const price = productEl.querySelector(".product-price")?.innerText || "0 ₽";
+    const img = productEl.querySelector("img")?.src || "";
+
+    // Если товар уже есть в корзине, увеличиваем кол-во
+    const existing = cart.find((item) => item.name === name);
+    if (existing) {
+      existing.count++;
+      existing.sizes.push(""); // добавляем пустой размер
+    } else {
+      cart.push({ name, price, img, count: 1, sizes: [""] });
+    }
+
+    saveCart(cart);
+    renderCart();
+    updateCartCount();
+  }
+});

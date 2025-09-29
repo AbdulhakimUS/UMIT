@@ -253,15 +253,16 @@ function onOrder() {
   message += `*Telegram:* ${profile.telegram || "—"}\n`;
   message += `*Доп. инфо:* ${profile.extra || "—"}\n`;
 
-  fetch(URL_API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: CHAT_ID,
-      text: message,
-      parse_mode: "Markdown", // <--- важно
-    }),
-  });
+fetch(URL_API, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ 
+    chat_id: CHAT_ID, 
+    text: message,
+    parse_mode: "Markdown"  // <--- важно
+  }),
+});
+
 
   if (location) {
     fetch(`https://api.telegram.org/bot${TOKEN}/sendLocation`, {
