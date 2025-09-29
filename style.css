@@ -180,7 +180,7 @@ nav {
   left: -10px;
 }
 
-.cart-icon{
+.cart-icon {
   text-decoration: none;
 }
 
@@ -362,18 +362,18 @@ nav {
   color: #fff;
   font-size: 20px;
   cursor: pointer;
-  opacity: 0;                 /* скрыто по умолчанию */
-  transform: scale(0.8);      /* чуть меньше */
-  transition: 0.3s ease;      /* плавное появление */
+  opacity: 0; /* скрыто по умолчанию */
+  transform: scale(0.8); /* чуть меньше */
+  transition: 0.3s ease; /* плавное появление */
 }
 
 .product-img:hover .add-to-cart {
-  opacity: 1;                 /* видно при наведении */
-  transform: scale(1);        /* возвращаем норм размер */
+  opacity: 1; /* видно при наведении */
+  transform: scale(1); /* возвращаем норм размер */
 }
 
 .add-to-cart:hover {
-  background: #a98003;        /* эффект при наведении */
+  background: #a98003; /* эффект при наведении */
 }
 
 /* hover-эффект */
@@ -749,3 +749,158 @@ body.modal-open {
   margin: 0 10px; /* отступы справа и слева */
 }
 
+/* Контейнер модалки */
+.profile-modal {
+  display: none; /* по умолчанию скрыта */
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* при show/hide держим display:flex, чтобы анимация видна */
+.profile-modal.show,
+.profile-modal.hide {
+  display: flex;
+}
+
+/* Контент модалки */
+.profile-modal-content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 25px 30px;
+  width: 400px;
+  max-width: 92%;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  /* если content случайно уже имеет анимацию - пусть оба режима работают */
+  animation-fill-mode: both; /* важно для корректного сохранения конечного состояния */
+}
+
+/* Анимация появления */
+.profile-modal.show .profile-modal-content {
+  animation: fadeIn 0.28s ease-in-out forwards;
+}
+
+/* Анимация ухода */
+.profile-modal.hide .profile-modal-content {
+  animation: fadeOut 0.28s ease-in-out forwards;
+}
+
+/* Остальные стили (твои ранее) */
+.profile-modal-content h2 {
+  margin-bottom: 15px;
+  font-weight: 600;
+  font-size: 20px;
+  text-align: center;
+}
+.profile-close {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.profile-close:hover {
+  color: #ff3b3b;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 14px;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #111;
+  outline: none;
+}
+textarea {
+  resize: none;
+  min-height: 70px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: #cc9800;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+.submit-btn:hover {
+  background: #be8203;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.address-input {
+  position: relative;
+  width: 100%;
+}
+
+.address-input input {
+  width: 100%;
+  padding-right: 40px; /* место справа для иконки */
+  box-sizing: border-box;
+}
+
+.geo-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #cc9800;
+  transition: color 0.2s;
+}
+
+.geo-btn:hover {
+  color: #a67400;
+}

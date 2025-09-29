@@ -20,13 +20,67 @@
 
     <link rel="stylesheet" href="shop.css" />
     <script src="shop.js" defer></script>
+    <script src="profile.js" defer></script>
 
     <title>UMIT — Корзина</title>
   </head>
   <body>
-    <!-- Кнопка назад -->
+    <div id="profileModal" class="profile-modal">
+      <div class="profile-modal-content">
+        <span class="profile-close">&times;</span>
+        <h2>Регистрация</h2>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="firstName">Имя</label>
+            <input type="text" id="firstName" placeholder="Введите имя" />
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Фамилия</label>
+            <input type="text" id="lastName" placeholder="Введите фамилию" />
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone" placeholder="+998 90 123 45 67" />
+          </div>
+
+          <div class="form-group">
+            <label for="telegram">Telegram</label>
+            <input type="text" id="telegram" placeholder="@username" />
+          </div>
+
+          <div class="form-group">
+            <label for="address">Адрес</label>
+            <div class="address-input">
+              <input type="text" id="address" placeholder="Ваш адрес" />
+              <button
+                type="button"
+                id="geoBtn"
+                class="geo-btn"
+                title="Определить по геолокации"
+              >
+                <i class="fa-solid fa-location-dot"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="extra">Доп. информация</label>
+            <textarea id="extra" placeholder="Комментарий к заказу"></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Сохранить</button>
+        </form>
+      </div>
+    </div>
+
     <button id="backBtn" class="back-btn">
       <i class="fa-solid fa-arrow-left"></i>
+    </button>
+
+    <button id="userBtn" class="user-btn">
+      <i class="fa-solid fa-user" id="userIcon"></i>
     </button>
 
     <h1>Ваша корзина</h1>

@@ -49,6 +49,7 @@
 
     <!-- js -->
     <script src="script.js" defer></script>
+    <script src="profile.js" defer></script>
 
     <title>UMIT</title>
   </head>
@@ -67,7 +68,7 @@
         </div>
         <div class="right-navbar">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <i class="fa-solid fa-user"></i>
+          <i class="fa-solid fa-user" id="userIcon"></i>
           <a href="shop.html" class="cart-icon">
             <i class="fa-solid fa-cart-shopping" id="cart-icon"></i>
             <span id="cart-count">0</span>
@@ -75,6 +76,56 @@
         </div>
       </div>
     </nav>
+
+    <div id="profileModal" class="profile-modal">
+      <div class="profile-modal-content">
+        <span class="profile-close">&times;</span>
+        <h2>Регистрация</h2>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="firstName">Имя</label>
+            <input type="text" id="firstName" placeholder="Введите имя" />
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Фамилия</label>
+            <input type="text" id="lastName" placeholder="Введите фамилию" />
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone" placeholder="+998 90 123 45 67" />
+          </div>
+
+          <div class="form-group">
+            <label for="telegram">Telegram</label>
+            <input type="text" id="telegram" placeholder="@username" />
+          </div>
+
+          <div class="form-group">
+            <label for="address">Адрес</label>
+            <div class="address-input">
+              <input type="text" id="address" placeholder="Ваш адрес" />
+              <button
+                type="button"
+                id="geoBtn"
+                class="geo-btn"
+                title="Определить по геолокации"
+              >
+                <i class="fa-solid fa-location-dot"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="extra">Доп. информация</label>
+            <textarea id="extra" placeholder="Комментарий к заказу"></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Сохранить</button>
+        </form>
+      </div>
+    </div>
 
     <div id="preloader">
       <div class="loader"></div>
