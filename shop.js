@@ -253,16 +253,15 @@ function onOrder() {
   message += `*Telegram:* ${profile.telegram || "—"}\n`;
   message += `*Доп. инфо:* ${profile.extra || "—"}\n`;
 
-fetch(URL_API, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ 
-    chat_id: CHAT_ID, 
-    text: message,
-    parse_mode: "Markdown"  // <--- важно
-  }),
-});
-
+  fetch(URL_API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: CHAT_ID,
+      text: message,
+      parse_mode: "Markdown", // <--- важно
+    }),
+  });
 
   if (location) {
     fetch(`https://api.telegram.org/bot${TOKEN}/sendLocation`, {
@@ -307,3 +306,44 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+
+(function () {
+  const input = document.getElementById("phone");
+  const prefix = "+998";
+
+  input.addEventListener("focus", () => {
+    if (!input.value) {
+      input.value = prefix;
+      setTimeout(
+        () => input.setSelectionRange(prefix.length, prefix.length),
+        0
+      );
+    }
+  });
+
+  input.addEventListener("keydown", (e) => {
+    const selStart = input.selectionStart;
+    // запрет удаления префикса
+    if (
+      (e.key === "Backspace" || e.key === "Delete") &&
+      selStart <= prefix.length
+    ) {
+      e.preventDefault();
+      input.setSelectionRange(prefix.length, prefix.length);
+    }
+  });
+
+  input.addEventListener("input", () => {
+    // оставляем только цифры после +998
+    if (!input.value.startsWith(prefix)) {
+      input.value = prefix + input.value.replace(/\D/g, "");
+    } else {
+      input.value =
+        prefix + input.value.slice(prefix.length).replace(/\D/g, "");
+    }
+  });
+
+  input.addEventListener("blur", () => {
+    if (input.value === prefix) input.value = "";
+  });
+})();

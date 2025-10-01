@@ -280,3 +280,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+(function () {
+  const input = document.getElementById("phone");
+  const prefix = "+998";
+
+  input.addEventListener("focus", () => {
+    if (!input.value) {
+      input.value = prefix;
+      setTimeout(
+        () => input.setSelectionRange(prefix.length, prefix.length),
+        0
+      );
+    }
+  });
+
+  input.addEventListener("keydown", (e) => {
+    const selStart = input.selectionStart;
+    // запрет удаления префикса
+    if (
+      (e.key === "Backspace" || e.key === "Delete") &&
+      selStart <= prefix.length
+    ) {
+      e.preventDefault();
+      input.setSelectionRange(prefix.length, prefix.length);
+    }
+  });
+
+  input.addEventListener("input", () => {
+    // оставляем только цифры после +998
+    if (!input.value.startsWith(prefix)) {
+      input.value = prefix + input.value.replace(/\D/g, "");
+    } else {
+      input.value =
+        prefix + input.value.slice(prefix.length).replace(/\D/g, "");
+    }
+  });
+
+  input.addEventListener("blur", () => {
+    if (input.value === prefix) input.value = "";
+  });
+})();
