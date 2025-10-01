@@ -28,7 +28,7 @@ h1 {
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   width: 300px; /* ширина */
-  aspect-ratio: 4 / 3; /* пропорция 4:3 */
+  aspect-ratio: 3 / 4; /* пропорция 4:3 */
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -353,3 +353,4 @@ textarea {
 .geo-btn:hover {
   color: #a67400;
 }
+

@@ -237,3 +237,46 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCart();
   updateCartCount();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const searchIcon = document.getElementById("search-icon");
+  const searchInput = document.getElementById("search-input");
+  const products = document.querySelectorAll(".product");
+
+  // Клик по иконке — показать/скрыть
+  searchIcon.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    if (searchInput.classList.contains("active")) {
+      searchInput.classList.remove("active");
+      searchInput.value = "";
+      products.forEach((p) => (p.style.display = "block"));
+    } else {
+      searchInput.classList.add("active");
+      setTimeout(() => searchInput.focus(), 100);
+    }
+  });
+
+  // Клик вне поля — закрыть поиск
+  document.addEventListener("click", () => {
+    if (searchInput.classList.contains("active")) {
+      searchInput.classList.remove("active");
+      searchInput.value = "";
+      products.forEach((p) => (p.style.display = "block"));
+    }
+  });
+
+  // Не закрывать при клике на input
+  searchInput.addEventListener("click", (e) => e.stopPropagation());
+
+  // Фильтрация
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+    products.forEach((product) => {
+      const title = product
+        .querySelector(".product-title")
+        .innerText.toLowerCase();
+      product.style.display = title.includes(query) ? "block" : "none";
+    });
+  });
+});
