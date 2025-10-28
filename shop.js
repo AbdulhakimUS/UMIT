@@ -232,14 +232,33 @@ function onOrder() {
   }
 
   const location = JSON.parse(localStorage.getItem("userLocation"));
+
+  // ------------------- ✨ ДОБАВЛЕНО: расчет суммы -------------------
   let message = "🛒 *НОВЫЙ ЗАКАЗ*\n\n";
+  let totalSum = 0;
+
   cart.forEach((item, i) => {
+    // достаём число из цены (например, "29 990 ₽" → 29990)
+    const priceMatch = item.price.match(/(\d+[\s\d]*)/);
+    const price = priceMatch ? parseInt(priceMatch[0].replace(/\s/g, "")) : 0;
+
+    // считаем общую сумму за этот товар
+    const itemTotal = price * item.count;
+    totalSum += itemTotal;
+
+    // добавляем в сообщение
     message += `${i + 1}) *${item.name}*\n`;
     message += `   *Количество:* ${item.count}\n`;
     message += `   *Размеры:* ${item.sizes ? item.sizes.join(", ") : "-"}\n`;
-    message += `   *Цена:* ${item.price}\n\n`;
+    message += `   *Цена за 1:* ${item.price}\n`;
+    message += `   *Сумма:* ${itemTotal.toLocaleString()} ₽\n\n`;
   });
 
+  // Добавляем общую сумму внизу
+  message += `💰 *Общая сумма:* ${totalSum.toLocaleString()} ₽\n\n`;
+  // ------------------- ✨ КОНЕЦ добавления -------------------
+
+  // Информация о клиенте (оставлено без изменений)
   message += `👤 *Клиент:*\n`;
   message += `*Имя:* ${profile.firstName} ${profile.lastName || ""}\n`;
   message += `*Телефон:* ${profile.phone}\n`;
@@ -253,16 +272,18 @@ function onOrder() {
   message += `*Telegram:* ${profile.telegram || "—"}\n`;
   message += `*Доп. инфо:* ${profile.extra || "—"}\n`;
 
+  // Отправляем сообщение
   fetch(URL_API, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       chat_id: CHAT_ID,
       text: message,
-      parse_mode: "Markdown", // <--- важно
+      parse_mode: "Markdown",
     }),
   });
 
+  // Отправляем локацию (если есть)
   if (location) {
     fetch(`https://api.telegram.org/bot${TOKEN}/sendLocation`, {
       method: "POST",

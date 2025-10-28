@@ -106,3 +106,35 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+const input = document.getElementById("telegram");
+
+// При фокусе — добавляем '@' если его нет, и ставим курсор после него
+input.addEventListener("focus", () => {
+  if (!input.value.startsWith("@")) {
+    input.value = "@" + input.value;
+  }
+  // ставим курсор после @ (если пользователь не хочет редактировать начало, он может переместить курсор)
+  try {
+    input.setSelectionRange(1, 1);
+  } catch (e) {
+    // в старых браузерах возможно не поддерживается — просто ничего
+  }
+});
+
+// При потере фокуса — если в поле только '@', очищаем его
+input.addEventListener("blur", () => {
+  if (input.value === "@") {
+    input.value = "";
+  }
+});
+
+// Дополнительно: если пользователь вставил или ввёл пробел в начале — убираем ведущие пробелы,
+// но сохраняем @ в начале (если он есть)
+input.addEventListener("input", () => {
+  // удаляем только ведущие пробелы, но не трогаем остальную часть
+  if (input.value.length > 0) {
+    // если пользователь ввёл пробелы перед @ — убираем их
+    input.value = input.value.replace(/^\s+/, "");
+  }
+});
