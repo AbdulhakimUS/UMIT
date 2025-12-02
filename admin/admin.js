@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   if (isPanelPage) {
     if (!session) {
-      window.location.href = 'index.html';
+      window.location.href = 'admin.html';
       return;
     }
     currentUser = session.user;
@@ -586,5 +586,5 @@ function showToast(message, type = 'success') {
 }
 
   document.getElementById('backBtn').addEventListener('click', () => {
-    window.location.href = 'index.html'; // возвращаем на главную страницу
+    window.location.href = '../index.html'; // возвращаем на главную страницу
   });
