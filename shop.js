@@ -52,6 +52,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Инициализация телефона
+  initPhoneInput();
+
   updateCartCount();
 });
 
@@ -213,45 +216,62 @@ function updateCartCount() {
   if (countElement) countElement.textContent = totalCount;
 }
 
-// ------------------- Профиль и заказ -------------------
-// Улучшенная функция отправки с retry
+// ------------------- Telegram с retry -------------------
 async function sendTelegramWithRetry(text, maxRetries = 3) {
-  // Получаем токен и chat_id из Supabase
-  const { data: settings } = await supabase
-    .from('site_content')
-    .select('section_key, content_value')
-    .in('section_key', ['telegram_token', 'telegram_chat_id']);
-  
-  const token = settings?.find(s => s.section_key === 'telegram_token')?.content_value || TOKEN;
-  const chatId = settings?.find(s => s.section_key === 'telegram_chat_id')?.content_value || CHAT_ID;
+  let token = TOKEN;
+  let chatId = CHAT_ID;
+
+  // Пробуем получить из Supabase
+  try {
+    if (typeof supabase !== "undefined") {
+      const { data: settings } = await supabase
+        .from("site_content")
+        .select("section_key, content_value")
+        .in("section_key", ["telegram_token", "telegram_chat_id"]);
+
+      if (settings) {
+        const t = settings.find((s) => s.section_key === "telegram_token");
+        const c = settings.find((s) => s.section_key === "telegram_chat_id");
+        if (t?.content_value) token = t.content_value;
+        if (c?.content_value) chatId = c.content_value;
+      }
+    }
+  } catch (e) {
+    console.warn("Could not fetch Telegram settings from Supabase:", e);
+  }
+
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
-  
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: chatId,
           text: text,
-          parse_mode: 'HTML'
-        })
+          parse_mode: "HTML",
+        }),
       });
-      
+
       if (response.ok) return true;
-      
-      console.warn(`Telegram attempt ${attempt} failed:`, await response.text());
+
+      console.warn(
+        `Telegram attempt ${attempt} failed:`,
+        await response.text()
+      );
     } catch (error) {
       console.warn(`Telegram attempt ${attempt} error:`, error);
     }
-    
+
     if (attempt < maxRetries) {
-      await new Promise(r => setTimeout(r, 1000 * attempt));
+      await new Promise((r) => setTimeout(r, 1000 * attempt));
     }
   }
   return false;
 }
 
+// ------------------- Заказ -------------------
 async function onOrder() {
   const cart = getCart();
   if (!cart.length) return alert("Корзина пуста!");
@@ -272,41 +292,46 @@ async function onOrder() {
 
   // Сохранение в Supabase
   try {
-    const { error } = await supabase.from("orders").insert({
-      customer_name: `${profile.firstName} ${profile.lastName || ""}`.trim(),
-      customer_phone: profile.phone,
-      customer_address: profile.address || "",
-      customer_telegram: profile.telegram || "",
-      items: cart,
-      total: totalSum,
-    });
+    if (typeof supabase !== "undefined") {
+      const { error } = await supabase.from("orders").insert({
+        customer_name: `${profile.firstName} ${profile.lastName || ""}`.trim(),
+        customer_phone: profile.phone,
+        customer_address: profile.address || "",
+        customer_telegram: profile.telegram || "",
+        items: cart,
+        total: totalSum,
+      });
 
-    if (error) {
-      console.error("Supabase error:", error);
+      if (error) {
+        console.error("Supabase error:", error);
+      }
     }
   } catch (e) {
     console.error("Save order error:", e);
   }
 
   // Формируем сообщение для Telegram
-  let itemsList = cart.map(item => {
-    const sizes = item.sizes?.filter(s => s).join(', ') || 'не указан';
-    return `• ${item.name} × ${item.count} (размер: ${sizes}) — ${item.price}`;
-  }).join('\n');
+  let itemsList = cart
+    .map((item) => {
+      const sizes = item.sizes?.filter((s) => s).join(", ") || "не указан";
+      return `• ${item.name} × ${item.count} (размер: ${sizes}) — ${item.price}`;
+    })
+    .join("\n");
 
-  const text = `🛒 <b>НОВЫЙ ЗАКАЗ</b>\n\n` +
-    `👤 <b>Клиент:</b> ${profile.firstName} ${profile.lastName || ''}\n` +
+  const text =
+    `🛒 <b>НОВЫЙ ЗАКАЗ</b>\n\n` +
+    `👤 <b>Клиент:</b> ${profile.firstName} ${profile.lastName || ""}\n` +
     `📱 <b>Телефон:</b> ${profile.phone}\n` +
-    `📍 <b>Адрес:</b> ${profile.address || 'не указан'}\n` +
-    `💬 <b>Telegram:</b> ${profile.telegram || 'не указан'}\n\n` +
+    `📍 <b>Адрес:</b> ${profile.address || "не указан"}\n` +
+    `💬 <b>Telegram:</b> ${profile.telegram || "не указан"}\n\n` +
     `📦 <b>Товары:</b>\n${itemsList}\n\n` +
     `💰 <b>ИТОГО: ${totalSum.toLocaleString()} ₽</b>`;
 
   // Отправка в Telegram с retry
   const sent = await sendTelegramWithRetry(text);
-  
+
   if (!sent) {
-    console.error('Telegram notification failed after retries');
+    console.error("Telegram notification failed after retries");
   }
 
   alert("✅ Заказ отправлен!");
@@ -314,7 +339,6 @@ async function onOrder() {
   renderCart();
   updateCartCount();
 }
-
 
 // ------------------- Вспомогательные -------------------
 function showToast(message) {
@@ -342,8 +366,11 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-(function () {
+// ------------------- Телефон с префиксом -------------------
+function initPhoneInput() {
   const input = document.getElementById("phone");
+  if (!input) return;
+
   const prefix = "+998";
 
   input.addEventListener("focus", () => {
@@ -358,7 +385,6 @@ function escapeHtml(text) {
 
   input.addEventListener("keydown", (e) => {
     const selStart = input.selectionStart;
-    // запрет удаления префикса
     if (
       (e.key === "Backspace" || e.key === "Delete") &&
       selStart <= prefix.length
@@ -369,7 +395,6 @@ function escapeHtml(text) {
   });
 
   input.addEventListener("input", () => {
-    // оставляем только цифры после +998
     if (!input.value.startsWith(prefix)) {
       input.value = prefix + input.value.replace(/\D/g, "");
     } else {
@@ -381,4 +406,4 @@ function escapeHtml(text) {
   input.addEventListener("blur", () => {
     if (input.value === prefix) input.value = "";
   });
-})();
+}
