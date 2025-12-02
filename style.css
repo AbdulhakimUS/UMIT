@@ -1022,38 +1022,58 @@ textarea {
 
 /* ========== MOBILE LARGE (max 768px) ========== */
 @media (max-width: 768px) {
-  /* Navbar */
+
+  /* NAVBAR */
   nav {
     height: 70px;
   }
 
   .navbar {
     padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
+  /* ---- CENTER: icons ---- */
+  .right-navbar {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 18px;
+    font-size: 20px;
+    z-index: 1001;
+  }
+
+  /* ---- RIGHT: hamburger ---- */
   .hamburger {
     display: flex;
+    margin-left: auto;
+    z-index: 1002;
   }
 
+  /* ---- SLIDE MENU ---- */
   .center-navbar {
     position: fixed;
     top: 70px;
-    left: 0;
-    width: 100%;
-    height: 0;
+    right: 0;
+    width: 80%;
+    height: 100vh;
     background: #111;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    gap: 0;
-    overflow: hidden;
-    transition: height 0.3s ease;
+    padding-top: 40px;
+
+    transform: translateX(100%);
+    transition: transform 0.35s ease;
+
     z-index: 999;
   }
 
   .center-navbar.active {
-    height: calc(100vh - 70px);
-    padding-top: 30px;
+    transform: translateX(0);
   }
 
   .center-navbar a {
@@ -1064,12 +1084,31 @@ textarea {
     border-bottom: 1px solid #222;
   }
 
-  .right-navbar {
-    gap: 15px;
-    font-size: 16px;
+  /* ---- DARK BLUR BACKDROP ---- */
+  .mobile-backdrop {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 70px);
+
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    z-index: 998;
   }
 
-  /* Home Section */
+  .mobile-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+
+  /* HOME */
   #home {
     margin-top: 70px;
     height: auto;
@@ -1113,7 +1152,7 @@ textarea {
     margin-top: 60px;
   }
 
-  /* Catalog Section */
+  /* CATALOG */
   #catalog-section {
     padding: 30px 15px;
   }
@@ -1247,6 +1286,8 @@ textarea {
   }
 }
 
+
+
 /* ========== MOBILE SMALL (max 480px) ========== */
 @media (max-width: 480px) {
   .navbar {
@@ -1269,7 +1310,7 @@ textarea {
 
   .right-navbar {
     gap: 10px;
-    font-size: 14px;
+    font-size: 18px; /* чуть меньше */
   }
 
   #cart-count {
@@ -1322,9 +1363,11 @@ textarea {
 
   .form-group input,
   .form-group textarea {
-    font-size: 16px; /* предотвращает зум на iOS */
+    font-size: 16px;
   }
 }
+
+
 
 /* ========== LANDSCAPE MOBILE ========== */
 @media (max-height: 500px) and (orientation: landscape) {

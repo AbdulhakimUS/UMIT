@@ -310,23 +310,44 @@ async function onOrder() {
     console.error("Save order error:", e);
   }
 
-  // Формируем сообщение для Telegram
+  // Формируем список товаров в красивом виде
   let itemsList = cart
-    .map((item) => {
+    .map((item, i) => {
       const sizes = item.sizes?.filter((s) => s).join(", ") || "не указан";
-      return `• ${item.name} × ${item.count} (размер: ${sizes}) — ${item.price}`;
+      const priceMatch = item.price.match(/(\d+[\s\d]*)/);
+      const price = priceMatch ? parseInt(priceMatch[0].replace(/\s/g, "")) : 0;
+      const sum = price * item.count;
+
+      return (
+        `<b>${i + 1}) ${item.name}</b>\n` +
+        `Количество: ${item.count}\n` +
+        `Размеры: ${sizes}\n` +
+        `Цена за 1: ${price.toLocaleString()} ₽\n` +
+        `Сумма: ${sum.toLocaleString()} ₽\n`
+      );
     })
     .join("\n");
 
+  // Блок адреса + геолокации
+  let addressBlock = "";
+  if (profile.location && profile.location.lat && profile.location.lng) {
+    addressBlock = `📍 <b>Локация:</b> https://maps.google.com/?q=${profile.location.lat},${profile.location.lng}`;
+  } else {
+    addressBlock = `📍 <b>Адрес:</b> ${profile.address || "не указан"}`;
+  }
+
+  // Финальный текст сообщения
   const text =
     `🛒 <b>НОВЫЙ ЗАКАЗ</b>\n\n` +
-    `👤 <b>Клиент:</b> ${profile.firstName} ${profile.lastName || ""}\n` +
-    `📱 <b>Телефон:</b> ${profile.phone}\n` +
-    `📍 <b>Адрес:</b> ${profile.address || "не указан"}\n` +
-    `💬 <b>Telegram:</b> ${profile.telegram || "не указан"}\n\n` +
-    `📦 <b>Товары:</b>\n${itemsList}\n\n` +
-    `💰 <b>ИТОГО: ${totalSum.toLocaleString()} ₽</b>`;
-
+    `${addressBlock}\n\n` +
+    `${itemsList}\n` +
+    `💰 <b>Общая сумма: ${totalSum.toLocaleString()} ₽</b>\n\n` +
+    `👤 <b>Клиент:</b>\n` +
+    `Имя: ${profile.firstName} ${profile.lastName || ""}\n` +
+    `Телефон: ${profile.phone}\n` +
+    `Telegram: ${profile.telegram || "не указан"}\n` +
+    `Доп. инфо: ${profile.comment || "—"}`;
+  
   // Отправка в Telegram с retry
   const sent = await sendTelegramWithRetry(text);
 

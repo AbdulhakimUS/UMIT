@@ -322,9 +322,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 })();
 
+// JS
 function toggleMenu() {
-  document.querySelector('.hamburger').classList.toggle('active');
-  document.querySelector('.center-navbar').classList.toggle('active');
+  const hamburger = document.querySelector('.hamburger');
+  const menu = document.querySelector('.center-navbar');
+  const backdrop = document.querySelector('.mobile-backdrop');
+
+  hamburger.classList.toggle('active');
+  menu.classList.toggle('active');
+  backdrop.classList.toggle('active'); // Показываем/скрываем фон
 }
 
 // Закрытие меню при клике на ссылку
@@ -332,9 +338,16 @@ document.querySelectorAll('.center-navbar a').forEach(link => {
   link.addEventListener('click', () => {
     document.querySelector('.hamburger').classList.remove('active');
     document.querySelector('.center-navbar').classList.remove('active');
+    document.querySelector('.mobile-backdrop').classList.remove('active');
   });
 });
 
+// Закрытие меню при клике на фон
+document.querySelector('.mobile-backdrop').addEventListener('click', () => {
+  document.querySelector('.hamburger').classList.remove('active');
+  document.querySelector('.center-navbar').classList.remove('active');
+  document.querySelector('.mobile-backdrop').classList.remove('active');
+});
 
 
 

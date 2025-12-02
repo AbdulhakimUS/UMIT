@@ -222,16 +222,16 @@ async function saveContent(key, prefix = '') {
   const inputId = prefix ? `${prefix}${key}` : key;
   const input = document.getElementById(inputId);
   if (!input) return;
-  
+
   const newValue = input.value;
-  
+
   // Получить старое значение для истории
   const { data: oldData } = await supabase
     .from('site_content')
     .select('content_value')
     .eq('section_key', key)
-    .single();
-  
+    .maybeSingle();
+
   // Сохранить историю
   if (oldData) {
     await supabase.from('content_history').insert({
@@ -241,18 +241,23 @@ async function saveContent(key, prefix = '') {
       admin_email: currentUser.email
     });
   }
-  
-  // Обновить контент
+
+  // Обновить контент (с указанием onConflict)
   const { error } = await supabase
     .from('site_content')
-    .upsert({ section_key: key, content_value: newValue, updated_at: new Date().toISOString() });
-  
+    .upsert(
+      { section_key: key, content_value: newValue, updated_at: new Date().toISOString() },
+      { onConflict: 'section_key' }
+    );
+
   if (error) {
+    console.error('Save error:', error);
     showToast('Ошибка сохранения', 'error');
   } else {
     showToast('Сохранено успешно!');
   }
 }
+
 
 // ------------------- ТОВАРЫ -------------------
 async function loadProducts() {
