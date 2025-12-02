@@ -584,3 +584,7 @@ function showToast(message, type = 'success') {
     toast.classList.remove('show');
   }, 3000);
 }
+
+  document.getElementById('backBtn').addEventListener('click', () => {
+    window.location.href = 'index.html'; // возвращаем на главную страницу
+  });

@@ -1119,7 +1119,9 @@ textarea {
     height: auto;
     min-height: 100vh;
     padding: 100px 20px 50px;
-    background-size: cover;
+    background-image: none;
+    background: linear-gradient(135deg, #cc9800 0%, #000 40%, #000 60%, #cc9800 100%);
+
   }
 
   .home-container .center-home {
@@ -1161,6 +1163,7 @@ textarea {
     flex-direction: column;
     gap: 15px;
     align-items: center;
+    margin-top: 50px;
   }
 
   .catalog-h2 {
@@ -1171,6 +1174,7 @@ textarea {
   .search-box {
     width: 100%;
     justify-content: center;
+    margin-bottom: 10px;
   }
 
   #search-input.active {
@@ -1213,6 +1217,7 @@ textarea {
     font-size: 14px;
     width: 100%;
     max-width: 200px;
+    margin: 0 auto;
   }
 
   /* Reviews Section */
