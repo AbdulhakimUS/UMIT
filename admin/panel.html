@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMIT — Панель управления</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img src="../img/logo 2.png" alt="UMIT">
+      <h2>UMIT Admin</h2>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-section="dashboard">
+        <i class="fa-solid fa-chart-line"></i> Дашборд
+      </a>
+      <a href="#" class="nav-item" data-section="home">
+        <i class="fa-solid fa-house"></i> Главная
+      </a>
+      <a href="#" class="nav-item" data-section="products">
+        <i class="fa-solid fa-box"></i> Товары
+      </a>
+      <a href="#" class="nav-item" data-section="orders">
+        <i class="fa-solid fa-receipt"></i> Заказы
+      </a>
+      <a href="#" class="nav-item" data-section="reviews">
+        <i class="fa-solid fa-star"></i> Отзывы
+      </a>
+      <a href="#" class="nav-item" data-section="content">
+        <i class="fa-solid fa-file-lines"></i> Контент
+      </a>
+      <a href="#" class="nav-item" data-section="settings">
+        <i class="fa-solid fa-gear"></i> Настройки
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button id="logoutBtn" class="btn-logout">
+        <i class="fa-solid fa-right-from-bracket"></i> Выйти
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <h1 id="pageTitle">Дашборд</h1>
+      <div class="user-info">
+        <span id="userEmail">admin@umit.uz</span>
+        <i class="fa-solid fa-circle-user"></i>
+      </div>
+    </header>
+
+    <!-- Dashboard -->
+    <section id="section-dashboard" class="section active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fa-solid fa-box"></i>
+          <div class="stat-info">
+            <span class="stat-number" id="totalProducts">0</span>
+            <span class="stat-label">Товаров</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-receipt"></i>
+          <div class="stat-info">
+            <span class="stat-number" id="totalOrders">0</span>
+            <span class="stat-label">Заказов</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-star"></i>
+          <div class="stat-info">
+            <span class="stat-number" id="totalReviews">0</span>
+            <span class="stat-label">Отзывов</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-ruble-sign"></i>
+          <div class="stat-info">
+            <span class="stat-number" id="totalRevenue">0</span>
+            <span class="stat-label">Выручка ₽</span>
+          </div>
+        </div>
+      </div>
+      <div class="recent-orders">
+        <h3>Последние заказы</h3>
+        <div id="recentOrdersList" class="orders-list"></div>
+      </div>
+    </section>
+
+    <!-- Home Section -->
+    <section id="section-home" class="section">
+      <h2>Редактирование главной страницы</h2>
+      <div class="edit-card">
+        <label>Заголовок (home_title)</label>
+        <div class="edit-row">
+          <input type="text" id="home_title" placeholder="Новая коллекция">
+          <button class="btn-save" onclick="saveContent('home_title')">
+            <i class="fa-solid fa-floppy-disk"></i> Сохранить
+          </button>
+        </div>
+      </div>
+      <div class="edit-card">
+        <label>Подзаголовок (home_subtitle)</label>
+        <div class="edit-row">
+          <input type="text" id="home_subtitle" placeholder="мужская коллекция">
+          <button class="btn-save" onclick="saveContent('home_subtitle')">
+            <i class="fa-solid fa-floppy-disk"></i> Сохранить
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="section-products" class="section">
+      <div class="section-header">
+        <h2>Управление товарами</h2>
+        <button class="btn-add" onclick="openProductModal()">
+          <i class="fa-solid fa-plus"></i> Добавить товар
+        </button>
+      </div>
+      <div id="productsList" class="products-grid"></div>
+    </section>
+
+    <!-- Orders Section -->
+    <section id="section-orders" class="section">
+      <h2>Заказы</h2>
+      <div class="orders-filter">
+        <select id="orderStatusFilter" onchange="filterOrders()">
+          <option value="all">Все заказы</option>
+          <option value="new">Новые</option>
+          <option value="processing">В обработке</option>
+          <option value="completed">Выполнены</option>
+          <option value="cancelled">Отменены</option>
+        </select>
+      </div>
+      <div id="ordersList" class="orders-table"></div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="section-reviews" class="section">
+      <div class="section-header">
+        <h2>Управление отзывами</h2>
+        <button class="btn-add" onclick="openReviewModal()">
+          <i class="fa-solid fa-plus"></i> Добавить отзыв
+        </button>
+      </div>
+      <div id="reviewsList" class="reviews-grid"></div>
+    </section>
+
+    <!-- Content Section -->
+    <section id="section-content" class="section">
+      <h2>Редактирование контента</h2>
+      <div id="contentList" class="content-list"></div>
+    </section>
+
+    <!-- Settings Section -->
+    <section id="section-settings" class="section">
+      <h2>Настройки</h2>
+      <div class="settings-grid">
+        <div class="edit-card">
+          <label>Telegram Bot Token</label>
+          <div class="edit-row">
+            <input type="text" id="telegram_token" placeholder="BOT_TOKEN">
+            <button class="btn-save" onclick="saveContent('telegram_token')">
+              <i class="fa-solid fa-floppy-disk"></i> Сохранить
+            </button>
+          </div>
+        </div>
+        <div class="edit-card">
+          <label>Telegram Chat ID</label>
+          <div class="edit-row">
+            <input type="text" id="telegram_chat_id" placeholder="CHAT_ID">
+            <button class="btn-save" onclick="saveContent('telegram_chat_id')">
+              <i class="fa-solid fa-floppy-disk"></i> Сохранить
+            </button>
+          </div>
+        </div>
+        <div class="edit-card">
+          <label>Телефон (footer)</label>
+          <div class="edit-row">
+            <input type="text" id="footer_phone" placeholder="+998 90 123 45 67">
+            <button class="btn-save" onclick="saveContent('footer_phone')">
+              <i class="fa-solid fa-floppy-disk"></i> Сохранить
+            </button>
+          </div>
+        </div>
+        <div class="edit-card">
+          <label>Email (footer)</label>
+          <div class="edit-row">
+            <input type="text" id="footer_email" placeholder="info@umit.uz">
+            <button class="btn-save" onclick="saveContent('footer_email')">
+              <i class="fa-solid fa-floppy-disk"></i> Сохранить
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Product Modal -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeProductModal()">&times;</span>
+      <h2 id="productModalTitle">Добавить товар</h2>
+      <form id="productForm">
+        <input type="hidden" id="productId">
+        <div class="form-group">
+          <label>Название</label>
+          <input type="text" id="productName" required>
+        </div>
+        <div class="form-group">
+          <label>Цена (₽)</label>
+          <input type="number" id="productPrice" required>
+        </div>
+        <div class="form-group">
+          <label>Описание</label>
+          <textarea id="productDesc"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Категория</label>
+          <select id="productCategory">
+            <option value="jacket">Куртки</option>
+            <option value="coat">Пальто</option>
+            <option value="pants">Брюки</option>
+            <option value="shirt">Рубашки</option>
+            <option value="other">Другое</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Изображение</label>
+          <input type="file" id="productImage" accept="image/*">
+          <img id="productImagePreview" class="image-preview" style="display:none;">
+        </div>
+        <button type="submit" class="btn-save full-width">
+          <i class="fa-solid fa-floppy-disk"></i> Сохранить товар
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div id="reviewModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeReviewModal()">&times;</span>
+      <h2 id="reviewModalTitle">Добавить отзыв</h2>
+      <form id="reviewForm">
+        <input type="hidden" id="reviewId">
+        <div class="form-group">
+          <label>Имя пользователя</label>
+          <input type="text" id="reviewUsername" required>
+        </div>
+        <div class="form-group">
+          <label>Текст отзыва</label>
+          <textarea id="reviewText" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Рейтинг</label>
+          <select id="reviewRating">
+            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+            <option value="4">⭐⭐⭐⭐ (4)</option>
+            <option value="3">⭐⭐⭐ (3)</option>
+            <option value="2">⭐⭐ (2)</option>
+            <option value="1">⭐ (1)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Фото (необязательно)</label>
+          <input type="file" id="reviewImage" accept="image/*">
+        </div>
+        <button type="submit" class="btn-save full-width">
+          <i class="fa-solid fa-floppy-disk"></i> Сохранить отзыв
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../supabaseClient.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

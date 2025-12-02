@@ -214,93 +214,107 @@ function updateCartCount() {
 }
 
 // ------------------- Профиль и заказ -------------------
-function onOrder() {
+// Улучшенная функция отправки с retry
+async function sendTelegramWithRetry(text, maxRetries = 3) {
+  // Получаем токен и chat_id из Supabase
+  const { data: settings } = await supabase
+    .from('site_content')
+    .select('section_key, content_value')
+    .in('section_key', ['telegram_token', 'telegram_chat_id']);
+  
+  const token = settings?.find(s => s.section_key === 'telegram_token')?.content_value || TOKEN;
+  const chatId = settings?.find(s => s.section_key === 'telegram_chat_id')?.content_value || CHAT_ID;
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: text,
+          parse_mode: 'HTML'
+        })
+      });
+      
+      if (response.ok) return true;
+      
+      console.warn(`Telegram attempt ${attempt} failed:`, await response.text());
+    } catch (error) {
+      console.warn(`Telegram attempt ${attempt} error:`, error);
+    }
+    
+    if (attempt < maxRetries) {
+      await new Promise(r => setTimeout(r, 1000 * attempt));
+    }
+  }
+  return false;
+}
+
+async function onOrder() {
   const cart = getCart();
   if (!cart.length) return alert("Корзина пуста!");
 
   const profile = JSON.parse(localStorage.getItem("userProfile")) || null;
-
-  if (
-    !profile ||
-    !profile.firstName ||
-    !profile.lastName ||
-    !profile.phone ||
-    (!profile.address && !localStorage.getItem("userLocation"))
-  ) {
-    alert("❗ Заполните все обязательные поля профиля");
+  if (!profile || !profile.firstName || !profile.phone) {
+    alert("❗ Заполните профиль");
     return;
   }
 
-  const location = JSON.parse(localStorage.getItem("userLocation"));
-
-  // ------------------- ✨ ДОБАВЛЕНО: расчет суммы -------------------
-  let message = "🛒 *НОВЫЙ ЗАКАЗ*\n\n";
+  // Расчет суммы
   let totalSum = 0;
-
-  cart.forEach((item, i) => {
-    // достаём число из цены (например, "29 990 ₽" → 29990)
+  cart.forEach((item) => {
     const priceMatch = item.price.match(/(\d+[\s\d]*)/);
     const price = priceMatch ? parseInt(priceMatch[0].replace(/\s/g, "")) : 0;
-
-    // считаем общую сумму за этот товар
-    const itemTotal = price * item.count;
-    totalSum += itemTotal;
-
-    // добавляем в сообщение
-    message += `${i + 1}) *${item.name}*\n`;
-    message += `   *Количество:* ${item.count}\n`;
-    message += `   *Размеры:* ${item.sizes ? item.sizes.join(", ") : "-"}\n`;
-    message += `   *Цена за 1:* ${item.price}\n`;
-    message += `   *Сумма:* ${itemTotal.toLocaleString()} ₽\n\n`;
+    totalSum += price * item.count;
   });
 
-  // Добавляем общую сумму внизу
-  message += `💰 *Общая сумма:* ${totalSum.toLocaleString()} ₽\n\n`;
-  // ------------------- ✨ КОНЕЦ добавления -------------------
+  // Сохранение в Supabase
+  try {
+    const { error } = await supabase.from("orders").insert({
+      customer_name: `${profile.firstName} ${profile.lastName || ""}`.trim(),
+      customer_phone: profile.phone,
+      customer_address: profile.address || "",
+      customer_telegram: profile.telegram || "",
+      items: cart,
+      total: totalSum,
+    });
 
-  // Информация о клиенте (оставлено без изменений)
-  message += `👤 *Клиент:*\n`;
-  message += `*Имя:* ${profile.firstName} ${profile.lastName || ""}\n`;
-  message += `*Телефон:* ${profile.phone}\n`;
-
-  if (location) {
-    message += `*Адрес:* 📍 Локация (см. карту)\n`;
-  } else {
-    message += `*Адрес:* ${profile.address || "—"}\n`;
+    if (error) {
+      console.error("Supabase error:", error);
+    }
+  } catch (e) {
+    console.error("Save order error:", e);
   }
 
-  message += `*Telegram:* ${profile.telegram || "—"}\n`;
-  message += `*Доп. инфо:* ${profile.extra || "—"}\n`;
+  // Формируем сообщение для Telegram
+  let itemsList = cart.map(item => {
+    const sizes = item.sizes?.filter(s => s).join(', ') || 'не указан';
+    return `• ${item.name} × ${item.count} (размер: ${sizes}) — ${item.price}`;
+  }).join('\n');
 
-  // Отправляем сообщение
-  fetch(URL_API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: CHAT_ID,
-      text: message,
-      parse_mode: "Markdown",
-    }),
-  });
+  const text = `🛒 <b>НОВЫЙ ЗАКАЗ</b>\n\n` +
+    `👤 <b>Клиент:</b> ${profile.firstName} ${profile.lastName || ''}\n` +
+    `📱 <b>Телефон:</b> ${profile.phone}\n` +
+    `📍 <b>Адрес:</b> ${profile.address || 'не указан'}\n` +
+    `💬 <b>Telegram:</b> ${profile.telegram || 'не указан'}\n\n` +
+    `📦 <b>Товары:</b>\n${itemsList}\n\n` +
+    `💰 <b>ИТОГО: ${totalSum.toLocaleString()} ₽</b>`;
 
-  // Отправляем локацию (если есть)
-  if (location) {
-    fetch(`https://api.telegram.org/bot${TOKEN}/sendLocation`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        latitude: location.lat,
-        longitude: location.lon,
-      }),
-    });
+  // Отправка в Telegram с retry
+  const sent = await sendTelegramWithRetry(text);
+  
+  if (!sent) {
+    console.error('Telegram notification failed after retries');
   }
 
   alert("✅ Заказ отправлен!");
-  localStorage.setItem("cart", JSON.stringify([]));
+  localStorage.setItem("cart", "[]");
   renderCart();
   updateCartCount();
 }
+
 
 // ------------------- Вспомогательные -------------------
 function showToast(message) {

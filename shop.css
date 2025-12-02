@@ -354,3 +354,79 @@ textarea {
   color: #a67400;
 }
 
+/* ==================== RESPONSIVE SHOP ==================== */
+@media (max-width: 768px) {
+  body {
+    padding: 15px 10px;
+  }
+
+  h1 {
+    font-size: 22px;
+    margin-bottom: 25px;
+  }
+
+  .cart-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .cart-card {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: auto;
+    padding: 12px;
+  }
+
+  .cart-card img {
+    height: 180px;
+  }
+
+  .cart-card .product-title {
+    font-size: 14px;
+  }
+
+  .cart-card .product-price {
+    font-size: 16px;
+  }
+
+  .size-select {
+    font-size: 14px;
+  }
+
+  .quantity-controls button {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .cart-buttons {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  #orderBtn {
+    padding: 10px 24px;
+    font-size: 16px;
+  }
+
+  #totalPrice {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 18px;
+  }
+
+  .cart-card img {
+    height: 150px;
+  }
+
+  .remove-btn {
+    top: 8px;
+    right: 8px;
+    padding: 6px;
+    font-size: 16px;
+  }
+}

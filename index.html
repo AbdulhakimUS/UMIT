@@ -44,6 +44,10 @@
       rel="stylesheet"
     />
 
+    <!-- supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+
     <!-- css -->
     <link rel="stylesheet" href="style.css" />
 
@@ -67,6 +71,11 @@
           <a href="#contact" class="nav-link">Контакты</a>
         </div>
         <div class="right-navbar">
+          <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
           <i class="fa-solid fa-user" id="userIcon"></i>
           <a href="shop.html" class="cart-icon">
             <i class="fa-solid fa-cart-shopping" id="cart-icon"></i>

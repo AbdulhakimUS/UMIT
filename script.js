@@ -321,3 +321,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (input.value === prefix) input.value = "";
   });
 })();
+
+function toggleMenu() {
+  document.querySelector('.hamburger').classList.toggle('active');
+  document.querySelector('.center-navbar').classList.toggle('active');
+}
+
+// Закрытие меню при клике на ссылку
+document.querySelectorAll('.center-navbar a').forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.hamburger').classList.remove('active');
+    document.querySelector('.center-navbar').classList.remove('active');
+  });
+});
+
+
+
+
+

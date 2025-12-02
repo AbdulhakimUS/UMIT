@@ -950,3 +950,395 @@ textarea {
 #search-icon:hover {
   transform: scale(1.2);
 }
+
+/* ==================== RESPONSIVE STYLES ==================== */
+
+/* Hamburger Menu (mobile) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: #cc9800;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* ========== TABLET (768px - 1024px) ========== */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 13px 20px;
+  }
+
+  .center-navbar {
+    gap: 20px;
+  }
+
+  .center-navbar a {
+    font-size: 16px;
+  }
+
+  .home-container .center-home h2 {
+    font-size: 40px;
+  }
+
+  .home-container .center-home-text {
+    font-size: 18px;
+  }
+
+  .catalog-h2,
+  .review-title {
+    font-size: 28px;
+  }
+
+  .review-grid {
+    gap: 30px;
+    padding: 0 20px;
+  }
+
+  .review-card {
+    width: 260px;
+    height: 160px;
+  }
+}
+
+/* ========== MOBILE LARGE (max 768px) ========== */
+@media (max-width: 768px) {
+  /* Navbar */
+  nav {
+    height: 70px;
+  }
+
+  .navbar {
+    padding: 10px 15px;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .center-navbar {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: #111;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
+    z-index: 999;
+  }
+
+  .center-navbar.active {
+    height: calc(100vh - 70px);
+    padding-top: 30px;
+  }
+
+  .center-navbar a {
+    font-size: 20px;
+    padding: 15px 0;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #222;
+  }
+
+  .right-navbar {
+    gap: 15px;
+    font-size: 16px;
+  }
+
+  /* Home Section */
+  #home {
+    margin-top: 70px;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .home-container {
+    height: auto;
+    min-height: 100vh;
+    padding: 100px 20px 50px;
+    background-size: cover;
+  }
+
+  .home-container .center-home {
+    margin-top: 50px;
+  }
+
+  .home-container .center-home h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+
+  .home-container .center-home-text {
+    font-size: 16px;
+    padding: 0 10px;
+  }
+
+  .home-container .center-home .buttons-home {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .home-container .center-home .buttons-home .btn {
+    padding: 10px 25px;
+    font-size: 14px;
+    width: 180px;
+  }
+
+  .mouse-home {
+    margin-top: 60px;
+  }
+
+  /* Catalog Section */
+  #catalog-section {
+    padding: 30px 15px;
+  }
+
+  .catalog-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .catalog-h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .search-box {
+    width: 100%;
+    justify-content: center;
+  }
+
+  #search-input.active {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .product {
+    padding: 10px;
+  }
+
+  .product-title {
+    font-size: 14px;
+  }
+
+  .product-price {
+    font-size: 16px;
+  }
+
+  .add-to-cart {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .buttons-catalog {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .catalog-button {
+    padding: 10px 20px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  /* Reviews Section */
+  .review-title {
+    font-size: 24px;
+    margin: 30px auto 15px;
+  }
+
+  .review-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 0 15px;
+  }
+
+  .review-card {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    min-height: 140px;
+  }
+
+  .review-card .review-text {
+    font-size: 14px;
+  }
+
+  .review-button {
+    padding: 10px 18px;
+    font-size: 14px;
+    margin: 20px auto;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 30px 15px;
+  }
+
+  .footer-top {
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+  }
+
+  .footer-column {
+    text-align: center;
+    width: 100%;
+  }
+
+  .footer-logo .footer-brand {
+    font-size: 24px;
+  }
+
+  .footer-title {
+    font-size: 16px;
+  }
+
+  .footer-bottom {
+    margin-top: 20px;
+    padding-top: 15px;
+    font-size: 12px;
+  }
+
+  /* Profile Modal */
+  .profile-modal-content {
+    width: 95%;
+    padding: 20px 15px;
+  }
+
+  .profile-modal-content h2 {
+    font-size: 18px;
+  }
+}
+
+/* ========== MOBILE SMALL (max 480px) ========== */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 10px 12px;
+  }
+
+  .navbar-brand-h1 {
+    font-size: 18px;
+  }
+
+  .navbar-brand-img {
+    width: 24px;
+    height: 34px;
+  }
+
+  .left-navbar {
+    font-size: 16px;
+    gap: 6px;
+  }
+
+  .right-navbar {
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  #cart-count {
+    padding: 1px 5px;
+    font-size: 10px;
+    top: -8px;
+    left: -8px;
+  }
+
+  .home-container .center-home h2 {
+    font-size: 22px;
+  }
+
+  .home-container .center-home-text {
+    font-size: 14px;
+  }
+
+  .home-container .center-home .buttons-home .btn {
+    padding: 8px 20px;
+    font-size: 13px;
+    width: 160px;
+  }
+
+  .products {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .product {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .catalog-h2,
+  .review-title {
+    font-size: 20px;
+  }
+
+  .review-card {
+    padding: 15px;
+  }
+
+  .review-card::before {
+    font-size: 40px;
+  }
+
+  .review-modal-phone {
+    width: 95%;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 16px; /* предотвращает зум на iOS */
+  }
+}
+
+/* ========== LANDSCAPE MOBILE ========== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .home-container {
+    height: auto;
+    min-height: 100vh;
+    padding: 80px 20px 30px;
+  }
+
+  .home-container .center-home {
+    margin-top: 20px;
+  }
+
+  .mouse-home {
+    display: none;
+  }
+}
