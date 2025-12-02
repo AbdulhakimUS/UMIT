@@ -407,3 +407,21 @@ function initPhoneInput() {
     if (input.value === prefix) input.value = "";
   });
 }
+
+// ------------------- Получение данных товара -------------------
+function getProductName(productEl) {
+  const titleEl = productEl.querySelector(".product-title");
+  return titleEl ? titleEl.textContent.trim() : "Товар";
+}
+
+function getProductPrice(productEl) {
+  const priceEl = productEl.querySelector(".product-price");
+  return priceEl ? priceEl.textContent.trim() : "0 ₽";
+}
+
+function getProductImage(productEl) {
+  const imgEl =
+    productEl.querySelector(".product-img img") ||
+    productEl.querySelector("img");
+  return imgEl ? imgEl.src : PLACEHOLDER_IMG;
+}
