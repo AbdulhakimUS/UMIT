@@ -1023,33 +1023,38 @@ textarea {
 /* ================= MOBILE MENU ================= */
 @media (max-width: 768px) {
   .navbar {
+    position: relative;
+    height: 70px;
     display: flex;
     justify-content: center; /* центрируем корзину и юзер */
-    position: relative;
-    padding: 10px 20px;
+    align-items: center;
     background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); /* тёмный градиент */
+    padding: 0 20px;
   }
 
   /* Гамбургер справа */
   .hamburger {
     position: absolute;
-    top: 12px;
+    top: 50%;
     right: 15px;
-    z-index: 1000;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
     font-size: 22px;
+    cursor: pointer;
+    z-index: 1000;
   }
 
   /* Корзина и юзер по центру */
   .right-navbar {
     position: absolute;
-    top: 12px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     display: flex;
     align-items: center;
     gap: 15px;
+    font-size: 18px;
   }
 
   .center-navbar {
@@ -1106,19 +1111,15 @@ textarea {
   }
 }
 
-/* ========== MOBILE SMALL (max 480px) ========== */
+/* ================= MOBILE SMALL (max 480px) ================= */
 @media (max-width: 480px) {
-  .navbar {
-    padding: 10px 12px;
-  }
-
   .navbar-brand-h1 {
     font-size: 18px;
   }
 
   .right-navbar {
     gap: 10px;
-    font-size: 18px;
+    font-size: 16px;
   }
 
   #cart-count {
@@ -1134,9 +1135,9 @@ textarea {
   }
 }
 
-/* Градиент на главной вместо фото */
+/* ================= MAIN HOME ================= */
 .home-container {
-  background: linear-gradient(135deg, #111 0%, #e4b56b10 100%);
+  background: linear-gradient(135deg, #111 0%, #e4b56b10 100%); /* тёмный градиент с лёгким золотым */
   min-height: 100vh;
   padding: 70px 20px 30px;
 }
