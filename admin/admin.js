@@ -64,7 +64,7 @@ async function initPanel() {
   // Выход
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await supabase.auth.signOut();
-    window.location.href = 'index.html';
+    window.location.href = 'admin.html';
   });
   
   // Гамбургер меню
