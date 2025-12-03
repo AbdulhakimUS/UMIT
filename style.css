@@ -1022,7 +1022,6 @@ textarea {
 
 /* ========== MOBILE LARGE (max 768px) ========== */
 @media (max-width: 768px) {
-
   /* NAVBAR */
   nav {
     height: 70px;
@@ -1035,7 +1034,7 @@ textarea {
     align-items: center;
   }
 
-  /* ---- CENTER: icons ---- */
+  /* ---- CENTER: user + cart icons ---- */
   .right-navbar {
     position: absolute;
     left: 50%;
@@ -1046,29 +1045,29 @@ textarea {
     z-index: 1001;
   }
 
-  /* ---- RIGHT: hamburger ---- */
-  .hamburger {
-    display: flex;
-    margin-left: auto;
-    z-index: 1002;
+  /* Скрываем hamburger из right-navbar и делаем отдельно справа */
+  .right-navbar .hamburger {
+    position: fixed;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
   }
 
-  /* ---- SLIDE MENU ---- */
+  /* ---- SLIDE MENU 90% ---- */
   .center-navbar {
     position: fixed;
     top: 70px;
     right: 0;
-    width: 80%;
+    width: 90%;
     height: 100vh;
     background: #111;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 40px;
-
+    padding-top: 30px;
     transform: translateX(100%);
     transition: transform 0.35s ease;
-
     z-index: 999;
   }
 
@@ -1076,12 +1075,21 @@ textarea {
     transform: translateX(0);
   }
 
+  /* ---- АККУРАТНЫЕ ССЫЛКИ ---- */
   .center-navbar a {
-    font-size: 20px;
-    padding: 15px 0;
+    font-size: 16px;
+    padding: 12px 20px;
     width: 100%;
     text-align: center;
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cc9800;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  .center-navbar a:hover {
+    background: rgba(204, 152, 0, 0.1);
+    color: #fff;
   }
 
   /* ---- DARK BLUR BACKDROP ---- */
@@ -1092,7 +1100,7 @@ textarea {
     width: 100%;
     height: calc(100vh - 70px);
 
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
 
     opacity: 0;
@@ -1107,7 +1115,6 @@ textarea {
     pointer-events: auto;
   }
 
-
   /* HOME */
   #home {
     margin-top: 70px;
@@ -1120,8 +1127,13 @@ textarea {
     min-height: 100vh;
     padding: 100px 20px 50px;
     background-image: none;
-    background: linear-gradient(135deg, #cc9800 0%, #000 40%, #000 60%, #cc9800 100%);
-
+    background: linear-gradient(
+      135deg,
+      #cc9800 0%,
+      #000 40%,
+      #000 60%,
+      #cc9800 100%
+    );
   }
 
   .home-container .center-home {
@@ -1291,8 +1303,6 @@ textarea {
   }
 }
 
-
-
 /* ========== MOBILE SMALL (max 480px) ========== */
 @media (max-width: 480px) {
   .navbar {
@@ -1371,8 +1381,6 @@ textarea {
     font-size: 16px;
   }
 }
-
-
 
 /* ========== LANDSCAPE MOBILE ========== */
 @media (max-height: 500px) and (orientation: landscape) {
