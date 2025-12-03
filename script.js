@@ -1,24 +1,56 @@
-// ------------------- Navbar scroll -------------------
-const navbar = document.querySelector(".navbar");
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 50) {
-    navbar.classList.add("scrolled");
-  } else {
-    navbar.classList.remove("scrolled");
-  }
-});
+// ------------------- Загрузка товаров из Supabase -------------------
+async function loadProductsFromSupabase() {
+  const container = document.getElementById("product-list");
+  if (!container) return;
 
-// ------------------- Прелоадер -------------------
-window.addEventListener("load", () => {
-  const preloader = document.getElementById("preloader");
-  if (preloader) {
-    setTimeout(() => preloader.classList.add("hidden"), 500);
-  }
-  window.scrollTo({ top: 0, behavior: "auto" });
-});
+  // Показать лоадер
+  container.innerHTML = '<div class="loading">Загрузка товаров...</div>';
 
-// ------------------- Показ/скрытие товаров -------------------
-document.addEventListener("DOMContentLoaded", () => {
+  try {
+    const { data: products, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Ошибка загрузки товаров:", error);
+      container.innerHTML = '<p class="error">Ошибка загрузки товаров</p>';
+      return;
+    }
+
+    if (!products || products.length === 0) {
+      container.innerHTML = "<p>Товары не найдены</p>";
+      return;
+    }
+
+    // Рендерим товары
+    container.innerHTML = products
+      .map(
+        (product) => `
+      <div class="product" data-id="${product.id}">
+        <div class="product-img">
+          <img src="${product.image_url || "./product/placeholder.jpg"}" alt="${
+          product.name
+        }" onerror="this.src='./product/placeholder.jpg'">
+          <button class="add-to-cart">+</button>
+        </div>
+        <div class="product-title">${product.name}</div>
+        <div class="product-price">${product.price.toLocaleString()} ₽</div>
+      </div>
+    `
+      )
+      .join("");
+
+    // Переинициализировать логику показа/скрытия товаров
+    initProductVisibility();
+  } catch (err) {
+    console.error("Ошибка:", err);
+    container.innerHTML = '<p class="error">Произошла ошибка</p>';
+  }
+}
+
+// Функция инициализации видимости товаров (после динамической загрузки)
+function initProductVisibility() {
   const products = Array.from(document.querySelectorAll(".product"));
   const showMoreBtn = document.getElementById("showMoreBtn");
   const closeBtn = document.getElementById("closeBtn");
@@ -37,7 +69,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  showMoreBtn?.addEventListener("click", () => {
+  // Удалить старые обработчики и добавить новые
+  const newShowMoreBtn = showMoreBtn?.cloneNode(true);
+  const newCloseBtn = closeBtn?.cloneNode(true);
+
+  showMoreBtn?.parentNode?.replaceChild(newShowMoreBtn, showMoreBtn);
+  closeBtn?.parentNode?.replaceChild(newCloseBtn, closeBtn);
+
+  newShowMoreBtn?.addEventListener("click", () => {
     visibleCount = Math.min(visibleCount + 4, products.length);
     updateProducts();
     const lastVisible =
@@ -45,15 +84,78 @@ document.addEventListener("DOMContentLoaded", () => {
     lastVisible?.scrollIntoView({ behavior: "smooth", block: "end" });
   });
 
-  closeBtn?.addEventListener("click", () => {
+  newCloseBtn?.addEventListener("click", () => {
     visibleCount = 4;
     updateProducts();
     document
-      .getElementById("catalog-section")
+      .getElementById("catalog")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   updateProducts();
+
+  // Переинициализировать поиск
+  initSearch(products);
+}
+
+// Функция инициализации поиска
+function initSearch(products) {
+  const searchInput = document.getElementById("search-input");
+  if (!searchInput) return;
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+    products.forEach((product) => {
+      const title =
+        product.querySelector(".product-title")?.innerText.toLowerCase() || "";
+      product.style.display = title.includes(query) ? "block" : "none";
+    });
+  });
+}
+
+// Загрузить товары при загрузке страницы
+document.addEventListener("DOMContentLoaded", () => {
+  loadProductsFromSupabase();
+});
+
+// ------------------- Realtime обновления товаров -------------------
+function subscribeToProductChanges() {
+  supabase
+    .channel("products-changes")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "products" },
+      (payload) => {
+        console.log("Изменение в товарах:", payload);
+        loadProductsFromSupabase(); // Перезагрузить товары
+      }
+    )
+    .subscribe();
+}
+
+// Вызвать при загрузке
+document.addEventListener("DOMContentLoaded", () => {
+  loadProductsFromSupabase();
+  subscribeToProductChanges(); // Подписаться на изменения
+});
+
+// ------------------- Navbar scroll -------------------
+const navbar = document.querySelector(".navbar");
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 50) {
+    navbar.classList.add("scrolled");
+  } else {
+    navbar.classList.remove("scrolled");
+  }
+});
+
+// ------------------- Прелоадер -------------------
+window.addEventListener("load", () => {
+  const preloader = document.getElementById("preloader");
+  if (preloader) {
+    setTimeout(() => preloader.classList.add("hidden"), 500);
+  }
+  window.scrollTo({ top: 0, behavior: "auto" });
 });
 
 // ------------------- Модалка отзывов -------------------
@@ -324,31 +426,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // JS
 function toggleMenu() {
-  const hamburger = document.querySelector('.hamburger');
-  const menu = document.querySelector('.center-navbar');
-  const backdrop = document.querySelector('.mobile-backdrop');
+  const hamburger = document.querySelector(".hamburger");
+  const menu = document.querySelector(".center-navbar");
+  const backdrop = document.querySelector(".mobile-backdrop");
 
-  hamburger.classList.toggle('active');
-  menu.classList.toggle('active');
-  backdrop.classList.toggle('active'); // Показываем/скрываем фон
+  hamburger.classList.toggle("active");
+  menu.classList.toggle("active");
+  backdrop.classList.toggle("active"); // Показываем/скрываем фон
 }
 
 // Закрытие меню при клике на ссылку
-document.querySelectorAll('.center-navbar a').forEach(link => {
-  link.addEventListener('click', () => {
-    document.querySelector('.hamburger').classList.remove('active');
-    document.querySelector('.center-navbar').classList.remove('active');
-    document.querySelector('.mobile-backdrop').classList.remove('active');
+document.querySelectorAll(".center-navbar a").forEach((link) => {
+  link.addEventListener("click", () => {
+    document.querySelector(".hamburger").classList.remove("active");
+    document.querySelector(".center-navbar").classList.remove("active");
+    document.querySelector(".mobile-backdrop").classList.remove("active");
   });
 });
 
 // Закрытие меню при клике на фон
-document.querySelector('.mobile-backdrop').addEventListener('click', () => {
-  document.querySelector('.hamburger').classList.remove('active');
-  document.querySelector('.center-navbar').classList.remove('active');
-  document.querySelector('.mobile-backdrop').classList.remove('active');
+document.querySelector(".mobile-backdrop").addEventListener("click", () => {
+  document.querySelector(".hamburger").classList.remove("active");
+  document.querySelector(".center-navbar").classList.remove("active");
+  document.querySelector(".mobile-backdrop").classList.remove("active");
 });
-
-
-
-

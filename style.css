@@ -982,6 +982,22 @@ textarea {
   transform: rotate(-45deg) translate(6px, -6px);
 }
 
+/* Лоадер для товаров */
+.products .loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #888;
+}
+
+.products .error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #e74c3c;
+}
+
 /* ========== TABLET (768px - 1024px) ========== */
 @media (max-width: 1024px) {
   .navbar {
