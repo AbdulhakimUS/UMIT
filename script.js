@@ -139,6 +139,26 @@ function initProductVisibility() {
   initSearch(products);
 }
 
+// ------------------- Realtime обновления контента сайта -------------------
+function subscribeToContentChanges() {
+  supabase
+    .channel("content-changes")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "site_content" },
+      (payload) => {
+        console.log("Изменение контента:", payload);
+        loadSiteContent(); // Перезагрузить контент
+      }
+    )
+    .subscribe();
+}
+
+// Добавь вызов в DOMContentLoaded:
+document.addEventListener("DOMContentLoaded", () => {
+  subscribeToContentChanges();
+});
+
 // ------------------- Поиск товаров -------------------
 function initSearch(products) {
   const searchInput = document.getElementById("search-input");
@@ -554,12 +574,28 @@ function addToCartFromModal() {
   closeProductModal();
 }
 
+// ------------------- Модальное окно отзывов -------------------
 function openReviewModal() {
-  document.getElementById("review-modal").style.display = "flex";
-  document.body.classList.add("modal-open");
+  const modal = document.getElementById("review-modal");
+  if (modal) {
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
 }
 
 function closeReviewModal() {
-  document.getElementById("review-modal").style.display = "none";
-  document.body.classList.remove("modal-open");
+  const modal = document.getElementById("review-modal");
+  if (modal) {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+  }
 }
+
+// Закрытие при клике на фон модалки
+document
+  .getElementById("review-modal")
+  ?.addEventListener("click", function (e) {
+    if (e.target === this) {
+      closeReviewModal();
+    }
+  });
