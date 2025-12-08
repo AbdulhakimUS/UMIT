@@ -440,11 +440,13 @@ nav {
 /* ================== ГЛАВНЫЙ БЛОК ================== */
 .review-grid {
   display: flex;
-  gap: 50px;
-  flex-wrap: nowrap;
+  gap: 10px;
   overflow-x: auto;
-  flex-direction: row;
-  justify-content: center;
+  padding: 10px 20px;
+  scrollbar-width: none;
+}
+.review-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .review-title {
@@ -459,45 +461,50 @@ nav {
   background-color: #fff;
   border: 1px solid #cc9800;
   border-radius: 8px;
-  padding: 20px;
+  padding: 10px;
   box-sizing: border-box;
-  width: 300px;
-  height: 180px;
+  width: 140px;
+  min-width: 140px;
+  height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 5px;
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .review-card::before {
-  content: "”";
+  content: "";
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  font-size: 60px;
-  color: rgba(204, 153, 0, 0.6);
+  bottom: 3px;
+  right: 6px;
+  font-size: 28px;
+  color: rgba(204, 153, 0, 0.35);
   font-family: serif;
   pointer-events: none;
 }
 
 .review-stars {
   color: #cc9800;
-  font-size: 18px;
+  font-size: 10px;
 }
 
 .review-text {
   font-style: italic;
   color: #000;
-  margin: 10px 0;
-  font-weight: bold;
+  margin: 0;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1.3;
 }
 
 .review-name {
-  color: #111;
-  font-size: 14px;
+  color: #555;
+  font-size: 9px;
   text-align: right;
 }
+
 
 .review-button {
   background-color: #cc9800;

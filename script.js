@@ -175,19 +175,19 @@ window.addEventListener("load", () => {
 });
 
 // ------------------- Модалка отзывов -------------------
-function openReviewModal() {
-  const modal = document.getElementById("review-modal");
-  if (!modal) return;
-  modal.style.display = "flex";
-  document.body.classList.add("modal-open");
-}
+// function openReviewModal() {
+//   const modal = document.getElementById("review-modal");
+//   if (!modal) return;
+//   modal.style.display = "flex";
+//   document.body.classList.add("modal-open");
+// }
 
-function closeReviewModal() {
-  const modal = document.getElementById("review-modal");
-  if (!modal) return;
-  modal.style.display = "none";
-  document.body.classList.remove("modal-open");
-}
+// function closeReviewModal() {
+//   const modal = document.getElementById("review-modal");
+//   if (!modal) return;
+//   modal.style.display = "none";
+//   document.body.classList.remove("modal-open");
+// }
 
 // ------------------- Профиль пользователя -------------------
 function loadProfile() {
@@ -552,4 +552,14 @@ function addToCartFromModal() {
   // Используй существующую логику корзины
   addProductToCart(currentModalProduct, selectedSize);
   closeProductModal();
+}
+
+function openReviewModal() {
+  document.getElementById("review-modal").style.display = "flex";
+  document.body.classList.add("modal-open");
+}
+
+function closeReviewModal() {
+  document.getElementById("review-modal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
