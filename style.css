@@ -408,8 +408,10 @@ nav {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
 .product-price {
   color: #cc9800;
   font-size: 14px;
