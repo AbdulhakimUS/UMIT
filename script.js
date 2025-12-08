@@ -79,53 +79,6 @@ async function loadProductsFromSupabase() {
   }
 }
 
-
-
-// ------------------- Загрузка контента сайта -------------------
-async function loadSiteContent() {
-  try {
-    const { data, error } = await supabase.from("site_content").select("*");
-
-    if (error) {
-      console.error("Ошибка загрузки контента:", error);
-      return;
-    }
-
-    if (data) {
-      data.forEach((item) => {
-        const element = document.querySelector(
-          `[data-content="${item.section_key}"]`
-        );
-        if (element) {
-          // Заменить \n на <br> для переносов строк
-          if (item.content_value.includes("\\n")) {
-            element.innerHTML = item.content_value.replace(/\\n/g, "<br>");
-          } else {
-            element.textContent = item.content_value;
-          }
-        }
-      });
-    }
-  } catch (err) {
-    console.error("Ошибка:", err);
-  }
-}
-
-// ------------------- Realtime контента -------------------
-function subscribeToContentChanges() {
-  supabase
-    .channel("content-changes")
-    .on(
-      "postgres_changes",
-      { event: "*", schema: "public", table: "site_content" },
-      (payload) => {
-        console.log("Изменение контента:", payload);
-        loadSiteContent();
-      }
-    )
-    .subscribe();
-}
-
 // ------------------- Видимость товаров (показать ещё) -------------------
 function initProductVisibility() {
   const products = Array.from(document.querySelectorAll(".product"));
@@ -186,7 +139,42 @@ function subscribeToContentChanges() {
     .subscribe();
 }
 
-// Добавь вызов в DOMContentLoaded:
+// ------------------- Загрузка контента сайта -------------------
+async function loadSiteContent() {
+  try {
+    const { data, error } = await supabase.from("site_content").select("*");
+    if (error) {
+      console.error("Ошибка загрузки контента:", error);
+      return;
+    }
+    if (data) {
+      data.forEach((item) => {
+        const el = document.querySelector(
+          `[data-content="${item.section_key}"]`
+        );
+        if (el) {
+          el.innerHTML = item.content_value.replace(/\\n/g, "<br>");
+        }
+      });
+    }
+  } catch (err) {
+    console.error("Ошибка:", err);
+  }
+}
+
+function subscribeToContentChanges() {
+  supabase
+    .channel("content-changes")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "site_content" },
+      () => {
+        loadSiteContent();
+      }
+    )
+    .subscribe();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   loadProductsFromSupabase();
   loadSiteContent();
