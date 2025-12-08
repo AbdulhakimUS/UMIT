@@ -1,9 +1,39 @@
+// =============================================
+// UMIT - JavaScript (с Supabase)
+// =============================================
+
+// ------------------- Загрузка контента сайта из Supabase -------------------
+async function loadSiteContent() {
+  try {
+    const { data, error } = await supabase.from('site_content').select('*');
+    
+    if (error) {
+      console.error('Ошибка загрузки контента:', error);
+      return;
+    }
+    
+    if (data) {
+      data.forEach(item => {
+        const element = document.querySelector(`[data-content="${item.section_key}"]`);
+        if (element) {
+          if (item.section_key === 'hero_title') {
+            element.innerHTML = item.content_value.replace(/\\n/g, '<br />');
+          } else {
+            element.textContent = item.content_value;
+          }
+        }
+      });
+    }
+  } catch (err) {
+    console.error('Ошибка:', err);
+  }
+}
+
 // ------------------- Загрузка товаров из Supabase -------------------
 async function loadProductsFromSupabase() {
   const container = document.getElementById("product-list");
   if (!container) return;
 
-  // Показать лоадер
   container.innerHTML = '<div class="loading">Загрузка товаров...</div>';
 
   try {
@@ -23,100 +53,27 @@ async function loadProductsFromSupabase() {
       return;
     }
 
-    // Рендерим товары
     container.innerHTML = products
       .map(
         (product) => `
       <div class="product" data-id="${product.id}">
         <div class="product-img">
-          <img src="${product.image_url || "./product/placeholder.jpg"}" alt="${
-          product.name
-        }" onerror="this.src='./product/placeholder.jpg'">
+          <img src="${product.image_url || "./product/placeholder.jpg"}" alt="${product.name}" onerror="this.src='./product/placeholder.jpg'">
           <button class="add-to-cart">+</button>
         </div>
         <div class="product-title">${product.name}</div>
-        <div class="product-price">${product.price.toLocaleString()} ₽</div>
+        <div class="product-price">${product.price.toLocaleString()} сум</div>
       </div>
     `
       )
       .join("");
 
-    // Переинициализировать логику показа/скрытия товаров
     initProductVisibility();
   } catch (err) {
     console.error("Ошибка:", err);
     container.innerHTML = '<p class="error">Произошла ошибка</p>';
   }
 }
-
-// Функция инициализации видимости товаров (после динамической загрузки)
-function initProductVisibility() {
-  const products = Array.from(document.querySelectorAll(".product"));
-  const showMoreBtn = document.getElementById("showMoreBtn");
-  const closeBtn = document.getElementById("closeBtn");
-
-  let visibleCount = 4;
-
-  function updateProducts() {
-    products.forEach((p, i) => p.classList.toggle("show", i < visibleCount));
-
-    if (showMoreBtn) {
-      showMoreBtn.style.display =
-        visibleCount >= products.length ? "none" : "inline-block";
-    }
-    if (closeBtn) {
-      closeBtn.style.display = visibleCount > 4 ? "inline-block" : "none";
-    }
-  }
-
-  // Удалить старые обработчики и добавить новые
-  const newShowMoreBtn = showMoreBtn?.cloneNode(true);
-  const newCloseBtn = closeBtn?.cloneNode(true);
-
-  showMoreBtn?.parentNode?.replaceChild(newShowMoreBtn, showMoreBtn);
-  closeBtn?.parentNode?.replaceChild(newCloseBtn, closeBtn);
-
-  newShowMoreBtn?.addEventListener("click", () => {
-    visibleCount = Math.min(visibleCount + 4, products.length);
-    updateProducts();
-    const lastVisible =
-      products[Math.min(visibleCount - 1, products.length - 1)];
-    lastVisible?.scrollIntoView({ behavior: "smooth", block: "end" });
-  });
-
-  newCloseBtn?.addEventListener("click", () => {
-    visibleCount = 4;
-    updateProducts();
-    document
-      .getElementById("catalog")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-
-  updateProducts();
-
-  // Переинициализировать поиск
-  initSearch(products);
-}
-
-// Функция инициализации поиска
-function initSearch(products) {
-  const searchInput = document.getElementById("search-input");
-  if (!searchInput) return;
-
-  searchInput.addEventListener("input", () => {
-    const query = searchInput.value.toLowerCase();
-    products.forEach((product) => {
-      const title =
-        product.querySelector(".product-title")?.innerText.toLowerCase() || "";
-      product.style.display = title.includes(query) ? "block" : "none";
-    });
-  });
-}
-
-// Загрузить товары при загрузке страницы
-document.addEventListener("DOMContentLoaded", () => {
-  loadProductsFromSupabase();
-});
 
 // ------------------- Realtime обновления товаров -------------------
 function subscribeToProductChanges() {
@@ -127,27 +84,77 @@ function subscribeToProductChanges() {
       { event: "*", schema: "public", table: "products" },
       (payload) => {
         console.log("Изменение в товарах:", payload);
-        loadProductsFromSupabase(); // Перезагрузить товары
+        loadProductsFromSupabase();
       }
     )
     .subscribe();
 }
 
-// Вызвать при загрузке
-document.addEventListener("DOMContentLoaded", () => {
-  loadProductsFromSupabase();
-  subscribeToProductChanges(); // Подписаться на изменения
-});
+// ------------------- Видимость товаров (показать ещё) -------------------
+function initProductVisibility() {
+  const products = Array.from(document.querySelectorAll(".product"));
+  const showMoreBtn = document.getElementById("showMoreBtn");
+  const closeBtn = document.getElementById("closeBtn");
+
+  let visibleCount = 4;
+
+  function updateProducts() {
+    products.forEach((p, i) => p.classList.toggle("show", i < visibleCount));
+    if (showMoreBtn) {
+      showMoreBtn.style.display = visibleCount >= products.length ? "none" : "inline-block";
+    }
+    if (closeBtn) {
+      closeBtn.style.display = visibleCount > 4 ? "inline-block" : "none";
+    }
+  }
+
+  const newShowMoreBtn = showMoreBtn?.cloneNode(true);
+  const newCloseBtn = closeBtn?.cloneNode(true);
+
+  showMoreBtn?.parentNode?.replaceChild(newShowMoreBtn, showMoreBtn);
+  closeBtn?.parentNode?.replaceChild(newCloseBtn, closeBtn);
+
+  newShowMoreBtn?.addEventListener("click", () => {
+    visibleCount = Math.min(visibleCount + 4, products.length);
+    updateProducts();
+    const lastVisible = products[Math.min(visibleCount - 1, products.length - 1)];
+    lastVisible?.scrollIntoView({ behavior: "smooth", block: "end" });
+  });
+
+  newCloseBtn?.addEventListener("click", () => {
+    visibleCount = 4;
+    updateProducts();
+    document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  updateProducts();
+  initSearch(products);
+}
+
+// ------------------- Поиск товаров -------------------
+function initSearch(products) {
+  const searchInput = document.getElementById("search-input");
+  if (!searchInput) return;
+
+  const newInput = searchInput.cloneNode(true);
+  searchInput.parentNode.replaceChild(newInput, searchInput);
+
+  newInput.addEventListener("input", () => {
+    const query = newInput.value.toLowerCase();
+    products.forEach((product) => {
+      const title = product.querySelector(".product-title")?.innerText.toLowerCase() || "";
+      product.style.display = title.includes(query) ? "block" : "none";
+    });
+  });
+}
 
 // ------------------- Navbar scroll -------------------
 const navbar = document.querySelector(".navbar");
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 50) {
-    navbar.classList.add("scrolled");
-  } else {
-    navbar.classList.remove("scrolled");
-  }
-});
+if (navbar) {
+  window.addEventListener("scroll", () => {
+    navbar.classList.toggle("scrolled", window.scrollY > 50);
+  });
+}
 
 // ------------------- Прелоадер -------------------
 window.addEventListener("load", () => {
@@ -174,94 +181,12 @@ function closeReviewModal() {
 }
 
 // ------------------- Профиль пользователя -------------------
-document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("profileModal");
-  const openBtn =
-    document.getElementById("userBtn") || document.querySelector(".fa-user");
-  const closeBtn = modal?.querySelector(".profile-close");
-  const form = document.getElementById("profileForm");
-
-  // Открытие модалки
-  openBtn?.addEventListener("click", () => {
-    modal.style.display = "flex";
-    document.body.style.overflow = "hidden";
-    loadProfile();
-  });
-
-  // Закрытие модалки
-  closeBtn?.addEventListener("click", () => {
-    modal.style.display = "none";
-    document.body.style.overflow = "";
-  });
-
-  window.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.style.display = "none";
-      document.body.style.overflow = "";
-    }
-  });
-
-  // Сохранение профиля
-  form?.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const profile = {
-      firstName: document.getElementById("firstName").value.trim(),
-      lastName: document.getElementById("lastName").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      telegram: document.getElementById("telegram").value.trim(),
-      address: document.getElementById("address").value.trim(),
-      extra: document.getElementById("extra").value.trim(),
-    };
-
-    if (
-      !profile.firstName ||
-      !profile.lastName ||
-      !profile.phone ||
-      !profile.address
-    ) {
-      return alert(
-        "❗ Заполните все обязательные поля (Имя, Фамилия, Телефон, Адрес)"
-      );
-    }
-
-    localStorage.setItem("userProfile", JSON.stringify(profile));
-    alert("✅ Профиль сохранён!");
-    modal.style.display = "none";
-    document.body.style.overflow = "";
-  });
-
-  // Кнопка геолокации
-  document.getElementById("geoBtn")?.addEventListener("click", () => {
-    if (!navigator.geolocation) return alert("Геолокация не поддерживается.");
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        document.getElementById(
-          "address"
-        ).value = `Моя локация: ${latitude}, ${longitude}`;
-        localStorage.setItem(
-          "userLocation",
-          JSON.stringify({ lat: latitude, lon: longitude })
-        );
-        alert("📍 Геолокация сохранена!");
-      },
-      () => alert("❌ Не удалось получить геолокацию")
-    );
-  });
-});
-
-// ------------------- Загрузка профиля -------------------
 function loadProfile() {
   const saved = JSON.parse(localStorage.getItem("userProfile")) || {};
-  if (saved.firstName)
-    document.getElementById("firstName").value = saved.firstName;
-  if (saved.lastName)
-    document.getElementById("lastName").value = saved.lastName;
+  if (saved.firstName) document.getElementById("firstName").value = saved.firstName;
+  if (saved.lastName) document.getElementById("lastName").value = saved.lastName;
   if (saved.phone) document.getElementById("phone").value = saved.phone;
-  if (saved.telegram)
-    document.getElementById("telegram").value = saved.telegram;
+  if (saved.telegram) document.getElementById("telegram").value = saved.telegram;
   if (saved.address) document.getElementById("address").value = saved.address;
   if (saved.extra) document.getElementById("extra").value = saved.extra;
 }
@@ -290,21 +215,20 @@ function renderCart() {
   const cartContainer = document.getElementById("cart-items");
   if (!cartContainer) return;
 
-  cartContainer.innerHTML = "";
-
-  cart.forEach((item) => {
-    const el = document.createElement("div");
-    el.classList.add("cart-item");
-    el.innerHTML = `
+  cartContainer.innerHTML = cart
+    .map(
+      (item) => `
+    <div class="cart-item">
       <img src="${item.img}" alt="${item.name}" class="cart-item-img">
       <div class="cart-item-info">
         <div class="cart-item-title">${item.name}</div>
         <div class="cart-item-price">${item.price}</div>
         <div class="cart-item-count">Кол-во: ${item.count}</div>
       </div>
-    `;
-    cartContainer.appendChild(el);
-  });
+    </div>
+  `
+    )
+    .join("");
 }
 
 // ------------------- Добавление товара в корзину -------------------
@@ -312,13 +236,12 @@ document.addEventListener("click", (e) => {
   const addBtn = e.target.closest(".add-to-cart");
   if (!addBtn) return;
 
-  const cart = getCart();
   const productEl = addBtn.closest(".product");
   if (!productEl) return;
 
-  const name =
-    productEl.querySelector(".product-title")?.innerText || "Без названия";
-  const price = productEl.querySelector(".product-price")?.innerText || "0 ₽";
+  const cart = getCart();
+  const name = productEl.querySelector(".product-title")?.innerText || "Без названия";
+  const price = productEl.querySelector(".product-price")?.innerText || "0 сум";
   const img = productEl.querySelector("img")?.src || "";
 
   const existing = cart.find((item) => item.name === name);
@@ -334,88 +257,32 @@ document.addEventListener("click", (e) => {
   updateCartCount();
 });
 
-// ------------------- Инициализация корзины при загрузке -------------------
-document.addEventListener("DOMContentLoaded", () => {
-  renderCart();
-  updateCartCount();
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const searchIcon = document.getElementById("search-icon");
-  const searchInput = document.getElementById("search-input");
-  const products = document.querySelectorAll(".product");
-
-  // Клик по иконке — показать/скрыть
-  searchIcon.addEventListener("click", (e) => {
-    e.stopPropagation();
-
-    if (searchInput.classList.contains("active")) {
-      searchInput.classList.remove("active");
-      searchInput.value = "";
-      products.forEach((p) => (p.style.display = "block"));
-    } else {
-      searchInput.classList.add("active");
-      setTimeout(() => searchInput.focus(), 100);
-    }
-  });
-
-  // Клик вне поля — закрыть поиск
-  document.addEventListener("click", () => {
-    if (searchInput.classList.contains("active")) {
-      searchInput.classList.remove("active");
-      searchInput.value = "";
-      products.forEach((p) => (p.style.display = "block"));
-    }
-  });
-
-  // Не закрывать при клике на input
-  searchInput.addEventListener("click", (e) => e.stopPropagation());
-
-  // Фильтрация
-  searchInput.addEventListener("input", () => {
-    const query = searchInput.value.toLowerCase();
-    products.forEach((product) => {
-      const title = product
-        .querySelector(".product-title")
-        .innerText.toLowerCase();
-      product.style.display = title.includes(query) ? "block" : "none";
-    });
-  });
-});
-
+// ------------------- Телефон с префиксом +998 -------------------
 (function () {
   const input = document.getElementById("phone");
+  if (!input) return;
+  
   const prefix = "+998";
 
   input.addEventListener("focus", () => {
     if (!input.value) {
       input.value = prefix;
-      setTimeout(
-        () => input.setSelectionRange(prefix.length, prefix.length),
-        0
-      );
+      setTimeout(() => input.setSelectionRange(prefix.length, prefix.length), 0);
     }
   });
 
   input.addEventListener("keydown", (e) => {
-    const selStart = input.selectionStart;
-    // запрет удаления префикса
-    if (
-      (e.key === "Backspace" || e.key === "Delete") &&
-      selStart <= prefix.length
-    ) {
+    if ((e.key === "Backspace" || e.key === "Delete") && input.selectionStart <= prefix.length) {
       e.preventDefault();
       input.setSelectionRange(prefix.length, prefix.length);
     }
   });
 
   input.addEventListener("input", () => {
-    // оставляем только цифры после +998
     if (!input.value.startsWith(prefix)) {
       input.value = prefix + input.value.replace(/\D/g, "");
     } else {
-      input.value =
-        prefix + input.value.slice(prefix.length).replace(/\D/g, "");
+      input.value = prefix + input.value.slice(prefix.length).replace(/\D/g, "");
     }
   });
 
@@ -424,29 +291,126 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 })();
 
-// JS
+// ------------------- Мобильное меню -------------------
 function toggleMenu() {
   const hamburger = document.querySelector(".hamburger");
   const menu = document.querySelector(".center-navbar");
   const backdrop = document.querySelector(".mobile-backdrop");
 
-  hamburger.classList.toggle("active");
-  menu.classList.toggle("active");
-  backdrop.classList.toggle("active"); // Показываем/скрываем фон
+  hamburger?.classList.toggle("active");
+  menu?.classList.toggle("active");
+  backdrop?.classList.toggle("active");
 }
 
-// Закрытие меню при клике на ссылку
-document.querySelectorAll(".center-navbar a").forEach((link) => {
-  link.addEventListener("click", () => {
-    document.querySelector(".hamburger").classList.remove("active");
-    document.querySelector(".center-navbar").classList.remove("active");
-    document.querySelector(".mobile-backdrop").classList.remove("active");
-  });
-});
+// ------------------- Инициализация при загрузке -------------------
+document.addEventListener("DOMContentLoaded", () => {
+  // Загрузка данных из Supabase
+  loadSiteContent();
+  loadProductsFromSupabase();
+  subscribeToProductChanges();
 
-// Закрытие меню при клике на фон
-document.querySelector(".mobile-backdrop").addEventListener("click", () => {
-  document.querySelector(".hamburger").classList.remove("active");
-  document.querySelector(".center-navbar").classList.remove("active");
-  document.querySelector(".mobile-backdrop").classList.remove("active");
+  // Корзина
+  renderCart();
+  updateCartCount();
+
+  // Профиль
+  const modal = document.getElementById("profileModal");
+  const openBtn = document.getElementById("userIcon") || document.querySelector(".fa-user");
+  const closeBtn = modal?.querySelector(".profile-close");
+  const form = document.getElementById("profileForm");
+
+  openBtn?.addEventListener("click", () => {
+    if (modal) {
+      modal.style.display = "flex";
+      document.body.style.overflow = "hidden";
+      loadProfile();
+    }
+  });
+
+  closeBtn?.addEventListener("click", () => {
+    if (modal) {
+      modal.style.display = "none";
+      document.body.style.overflow = "";
+    }
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+      document.body.style.overflow = "";
+    }
+  });
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const profile = {
+      firstName: document.getElementById("firstName").value.trim(),
+      lastName: document.getElementById("lastName").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      telegram: document.getElementById("telegram").value.trim(),
+      address: document.getElementById("address").value.trim(),
+      extra: document.getElementById("extra").value.trim(),
+    };
+
+    if (!profile.firstName || !profile.lastName || !profile.phone || !profile.address) {
+      return alert("❗ Заполните все обязательные поля");
+    }
+
+    localStorage.setItem("userProfile", JSON.stringify(profile));
+    alert("✅ Профиль сохранён!");
+    modal.style.display = "none";
+    document.body.style.overflow = "";
+  });
+
+  document.getElementById("geoBtn")?.addEventListener("click", () => {
+    if (!navigator.geolocation) return alert("Геолокация не поддерживается.");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        document.getElementById("address").value = `${latitude}, ${longitude}`;
+        localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lon: longitude }));
+        alert("📍 Геолокация сохранена!");
+      },
+      () => alert("❌ Не удалось получить геолокацию")
+    );
+  });
+
+  // Закрытие мобильного меню при клике на ссылку
+  document.querySelectorAll(".center-navbar a").forEach((link) => {
+    link.addEventListener("click", () => {
+      document.querySelector(".hamburger")?.classList.remove("active");
+      document.querySelector(".center-navbar")?.classList.remove("active");
+      document.querySelector(".mobile-backdrop")?.classList.remove("active");
+    });
+  });
+
+  // Закрытие меню при клике на фон
+  document.querySelector(".mobile-backdrop")?.addEventListener("click", () => {
+    document.querySelector(".hamburger")?.classList.remove("active");
+    document.querySelector(".center-navbar")?.classList.remove("active");
+    document.querySelector(".mobile-backdrop")?.classList.remove("active");
+  });
+
+  // Поиск — иконка
+  const searchIcon = document.getElementById("search-icon");
+  const searchInput = document.getElementById("search-input");
+  
+  searchIcon?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    searchInput?.classList.toggle("active");
+    if (searchInput?.classList.contains("active")) {
+      setTimeout(() => searchInput.focus(), 100);
+    } else {
+      searchInput.value = "";
+    }
+  });
+
+  document.addEventListener("click", () => {
+    if (searchInput?.classList.contains("active")) {
+      searchInput.classList.remove("active");
+      searchInput.value = "";
+    }
+  });
+
+  searchInput?.addEventListener("click", (e) => e.stopPropagation());
 });
