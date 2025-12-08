@@ -332,7 +332,6 @@ nav {
   margin-bottom: 20px;
 }
 
-
 /* карточка товара — по умолчанию скрыта, когда добавляем .show — она показывается */
 .product {
   background: #fff;
@@ -345,7 +344,6 @@ nav {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
-
 
 .product.show {
   display: block; /* показываем карточку — секция увеличит высоту */
@@ -367,7 +365,6 @@ nav {
   transform: scale(0.8);
   transition: 0.3s ease;
 }
-
 
 .product-img:hover .add-to-cart {
   opacity: 1; /* видно при наведении */
@@ -398,7 +395,6 @@ nav {
   object-fit: cover;
 }
 
-
 .product-title {
   margin: 6px 0 3px;
   font-weight: 600;
@@ -417,7 +413,6 @@ nav {
   font-size: 14px;
   font-weight: 700;
 }
-
 
 .buttons-catalog {
   display: flex;
@@ -738,6 +733,393 @@ body.modal-open {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* ================== КОМПАКТНЫЕ ОТЗЫВЫ ================== */
+.review-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 10px 0;
+  scrollbar-width: none;
+  justify-content: flex-start;
+}
+
+.review-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.review-card {
+  min-width: 180px;
+  max-width: 200px;
+  height: auto;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 12px;
+  flex-shrink: 0;
+}
+
+.review-card::before {
+  display: none;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.review-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #cc9800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #111;
+}
+
+.review-stars {
+  font-size: 10px;
+  color: #cc9800;
+}
+
+.review-text {
+  font-size: 11px;
+  color: #999;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.review-name {
+  font-size: 11px;
+  color: #fff;
+  text-align: left;
+  margin-top: 8px;
+}
+
+.review-date {
+  font-size: 9px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* ================== МОДАЛЬНОЕ ОКНО ТОВАРА ================== */
+.product-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.product-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.product-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 95vh;
+  background: #111;
+  border-radius: 20px 20px 0 0;
+  z-index: 1000;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.product-modal.active {
+  transform: translateY(0);
+}
+
+.product-modal-content {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.product-modal-content::-webkit-scrollbar {
+  display: none;
+}
+
+.product-modal-header {
+  position: sticky;
+  top: 0;
+  background: rgba(17, 17, 17, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #222;
+  z-index: 10;
+}
+
+.product-modal-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.product-modal-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 10px;
+}
+
+.product-modal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.product-modal-actions button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.product-modal-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #1a1a1a;
+}
+
+.product-modal-discount {
+  position: absolute;
+  top: 70px;
+  left: 16px;
+  background: #e53935;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.product-modal-thumbs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.product-modal-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+
+.product-modal-thumb.active {
+  border-color: #cc9800;
+}
+
+.product-modal-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-modal-info {
+  padding: 16px;
+}
+
+.product-modal-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.product-modal-rating-box {
+  background: #1a1a1a;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.product-modal-rating-box span {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.product-modal-rating-box .stars {
+  color: #cc9800;
+  font-size: 12px;
+}
+
+.product-modal-reviews-count {
+  font-size: 12px;
+  color: #888;
+}
+
+.product-modal-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.product-modal-sizes {
+  margin-bottom: 20px;
+}
+
+.product-modal-label {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.product-modal-sizes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.size-btn {
+  padding: 10px 18px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.size-btn:hover {
+  border-color: #cc9800;
+}
+
+.size-btn.active {
+  border-color: #cc9800;
+  background: #cc9800;
+  color: #111;
+}
+
+.product-modal-desc {
+  margin-bottom: 20px;
+}
+
+.product-modal-desc-text {
+  font-size: 14px;
+  color: #ccc;
+  line-height: 1.6;
+}
+
+.product-modal-reviews-section {
+  margin-bottom: 100px;
+}
+
+.product-modal-reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.product-modal-reviews-header span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.product-modal-reviews-header a {
+  font-size: 12px;
+  color: #cc9800;
+  text-decoration: none;
+}
+
+.product-modal-reviews-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+}
+
+.product-modal-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(17, 17, 17, 0.98);
+  backdrop-filter: blur(10px);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #222;
+  z-index: 1001;
+}
+
+.product-modal-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #cc9800;
+}
+
+.product-modal-oldprice {
+  font-size: 13px;
+  color: #666;
+  text-decoration: line-through;
+  margin-left: 8px;
+}
+
+.product-modal-cart-btn {
+  background: #cc9800;
+  color: #111;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.product-modal-cart-btn:hover {
+  background: #b8860b;
 }
 
 @media (max-width: 768px) {

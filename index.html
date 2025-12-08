@@ -58,6 +58,91 @@
     <title>UMIT</title>
   </head>
   <body>
+    <!-- Product Modal -->
+    <div
+      class="product-modal-overlay"
+      id="productOverlay"
+      onclick="closeProductModal()"
+    ></div>
+    <div class="product-modal" id="productModal">
+      <div class="product-modal-content">
+        <div class="product-modal-header">
+          <button class="product-modal-close" onclick="closeProductModal()">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <span class="product-modal-name" id="modalProductName"></span>
+          <div class="product-modal-actions">
+            <button><i class="fa-regular fa-heart"></i></button>
+            <button><i class="fa-solid fa-share-nodes"></i></button>
+          </div>
+        </div>
+
+        <div style="position: relative">
+          <img class="product-modal-image" id="modalMainImage" src="" alt="" />
+          <span
+            class="product-modal-discount"
+            id="modalDiscount"
+            style="display: none"
+          ></span>
+        </div>
+
+        <div class="product-modal-thumbs" id="modalThumbs"></div>
+
+        <div class="product-modal-info">
+          <div class="product-modal-rating">
+            <div class="product-modal-rating-box">
+              <span id="modalRating">4.7</span>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+            <span class="product-modal-reviews-count" id="modalReviewsCount"
+              >182 отзыва</span
+            >
+          </div>
+
+          <h2 class="product-modal-title" id="modalTitle"></h2>
+
+          <div class="product-modal-sizes">
+            <p class="product-modal-label">Размер:</p>
+            <div class="product-modal-sizes-list" id="modalSizes"></div>
+          </div>
+
+          <div class="product-modal-desc">
+            <p class="product-modal-label">Описание:</p>
+            <p class="product-modal-desc-text" id="modalDescription"></p>
+          </div>
+
+          <div class="product-modal-reviews-section">
+            <div class="product-modal-reviews-header">
+              <span>Отзывы</span>
+              <a
+                href="#"
+                onclick="openReviewModal(); closeProductModal(); return false;"
+                >Все отзывы</a
+              >
+            </div>
+            <div class="product-modal-reviews-list" id="modalReviewsList"></div>
+          </div>
+        </div>
+
+        <div class="product-modal-footer">
+          <div>
+            <span class="product-modal-price" id="modalPrice"></span>
+            <span class="product-modal-oldprice" id="modalOldPrice"></span>
+          </div>
+          <button class="product-modal-cart-btn" onclick="addToCartFromModal()">
+            <i class="fa-solid fa-cart-shopping"></i>
+            В корзину
+          </button>
+        </div>
+      </div>
+    </div>
+
     <nav>
       <div class="navbar navbar-container">
         <div class="left-navbar">
@@ -152,7 +237,9 @@
             коллекция
           </h2>
           <div class="center-home-text">
-            <h5 class="center-home-text-h5"  data-content="hero_subtitle">мужская коллекция</h5>
+            <h5 class="center-home-text-h5" data-content="hero_subtitle">
+              мужская коллекция
+            </h5>
             <hr />
             <div class="buttons-home">
               <a href="#catalog" class="btn btn-primary">Смотреть каталог</a>
@@ -168,7 +255,9 @@
     <section id="catalog">
       <div class="catalog-container">
         <div class="catalog-header">
-          <h2 class="catalog-h2" data-content="catalog_title">Новые поступления</h2>
+          <h2 class="catalog-h2" data-content="catalog_title">
+            Новые поступления
+          </h2>
           <!-- Поиск -->
           <div class="search-box">
             <input
@@ -201,203 +290,78 @@
 
     <section id="review">
       <div class="review-container">
-        <h2 class="review-title" data-content="reviews_title">Отзывы покупателей</h2>
+        <h2 class="review-title">Отзывы покупателей</h2>
         <div class="review-grid">
           <div class="review-card">
-            <div class="review-stars">
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
+            <div class="review-header">
+              <div class="review-avatar">А</div>
+              <div class="review-stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
             </div>
-            <div class="review-text">
-              "Очень тёплый и стильный. Рекомендую!"
-            </div>
-            <div class="review-name">– Алексей К.</div>
+            <p class="review-text">
+              Очень тёплый и стильный. Качество отличное, рекомендую!
+            </p>
+            <p class="review-name">Алексей К.</p>
+            <p class="review-date">2 дня назад</p>
           </div>
           <div class="review-card">
-            <div class="review-stars">
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star-half-stroke"></i>
+            <div class="review-header">
+              <div class="review-avatar">С</div>
+              <div class="review-stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star-half-stroke"></i>
+              </div>
             </div>
-            <div class="review-text">
-              "Быстрая доставка и отличное качество."
-            </div>
-            <div class="review-name">– Сергей М.</div>
+            <p class="review-text">
+              Быстрая доставка и отличное качество материала.
+            </p>
+            <p class="review-name">Сергей М.</p>
+            <p class="review-date">5 дней назад</p>
           </div>
           <div class="review-card">
-            <div class="review-stars">
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
-              <i class="fa-solid fa-star"></i>
+            <div class="review-header">
+              <div class="review-avatar">В</div>
+              <div class="review-stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
             </div>
-            <div class="review-text">
-              "Покупал пальто для работы. Отличное качество."
+            <p class="review-text">
+              Покупал пальто для работы. Сидит идеально!
+            </p>
+            <p class="review-name">Владимир С.</p>
+            <p class="review-date">1 неделю назад</p>
+          </div>
+          <div class="review-card">
+            <div class="review-header">
+              <div class="review-avatar">Д</div>
+              <div class="review-stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
             </div>
-            <div class="review-name">– Владимир С.</div>
+            <p class="review-text">Супер качество! Буду заказывать ещё.</p>
+            <p class="review-name">Дильшод Р.</p>
+            <p class="review-date">2 недели назад</p>
           </div>
         </div>
         <button class="review-button" onclick="openReviewModal()">
           Посмотреть все отзывы
         </button>
-
-        <!-- Модальное окно -->
-        <div id="review-modal" class="review-modal">
-          <div class="review-modal-phone">
-            <div class="review-modal-header">
-              <h3 class="review-modal-title">Все отзывы</h3>
-              <span class="review-close" onclick="closeReviewModal()">×</span>
-            </div>
-            <div class="review-modal-body">
-              <!-- 1 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                </div>
-
-                <div class="review-text">
-                  "Очень тёплый и стильный. Рекомендую!"
-                </div>
-                <div class="review-name">– Алексей К.</div>
-              </div>
-
-              <!-- 2 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="review-text">
-                  "Быстрая доставка и отличное качество."
-                </div>
-                <div class="review-name">– Сергей М.</div>
-              </div>
-
-              <!-- 3 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i>
-                </div>
-                <div class="review-text">
-                  "Покупал пальто для работы. Отличное качество."
-                </div>
-                <div class="review-name">– Владимир С.</div>
-              </div>
-
-              <!-- 4 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="review-text">
-                  "Размер маломерит, берите больше."
-                </div>
-                <div class="review-name">– Дмитрий П.</div>
-              </div>
-
-              <!-- 5 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i>
-                </div>
-                <div class="review-text">"Очень доволен покупкой."</div>
-                <div class="review-name">– Илья Н.</div>
-              </div>
-
-              <!-- 6 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="review-text">
-                  "Хорошая ткань, но цвет чуть темнее."
-                </div>
-                <div class="review-name">– Олег С.</div>
-              </div>
-
-              <!-- 7 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i>
-                </div>
-                <div class="review-text">"Сидит идеально, рекомендую!"</div>
-                <div class="review-name">– Артём Л.</div>
-              </div>
-
-              <!-- 8 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="review-text">"Очень удобная куртка."</div>
-                <div class="review-name">– Павел Т.</div>
-              </div>
-
-              <!-- 9 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="review-text">"Тёплая и лёгкая."</div>
-                <div class="review-name">– Евгений Ф.</div>
-              </div>
-
-              <!-- 10 -->
-              <div class="review-card-modal">
-                <div class="review-stars">
-                  <i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star"></i
-                  ><i class="fa-solid fa-star-half-stroke"></i>
-                </div>
-                <div class="review-text">"Отличный фасон."</div>
-                <div class="review-name">– Тимур А.</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 

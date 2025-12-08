@@ -5,19 +5,21 @@
 // ------------------- Загрузка контента сайта из Supabase -------------------
 async function loadSiteContent() {
   try {
-    const { data, error } = await supabase.from('site_content').select('*');
-    
+    const { data, error } = await supabase.from("site_content").select("*");
+
     if (error) {
-      console.error('Ошибка загрузки контента:', error);
+      console.error("Ошибка загрузки контента:", error);
       return;
     }
-    
+
     if (data) {
-      data.forEach(item => {
-        const element = document.querySelector(`[data-content="${item.section_key}"]`);
+      data.forEach((item) => {
+        const element = document.querySelector(
+          `[data-content="${item.section_key}"]`
+        );
         if (element) {
-          if (item.section_key === 'hero_title') {
-            element.innerHTML = item.content_value.replace(/\\n/g, '<br />');
+          if (item.section_key === "hero_title") {
+            element.innerHTML = item.content_value.replace(/\\n/g, "<br />");
           } else {
             element.textContent = item.content_value;
           }
@@ -25,7 +27,7 @@ async function loadSiteContent() {
       });
     }
   } catch (err) {
-    console.error('Ошибка:', err);
+    console.error("Ошибка:", err);
   }
 }
 
@@ -58,7 +60,9 @@ async function loadProductsFromSupabase() {
         (product) => `
       <div class="product" data-id="${product.id}">
         <div class="product-img">
-          <img src="${product.image_url || "./product/placeholder.jpg"}" alt="${product.name}" onerror="this.src='./product/placeholder.jpg'">
+          <img src="${product.image_url || "./product/placeholder.jpg"}" alt="${
+          product.name
+        }" onerror="this.src='./product/placeholder.jpg'">
           <button class="add-to-cart">+</button>
         </div>
         <div class="product-title">${product.name}</div>
@@ -101,7 +105,8 @@ function initProductVisibility() {
   function updateProducts() {
     products.forEach((p, i) => p.classList.toggle("show", i < visibleCount));
     if (showMoreBtn) {
-      showMoreBtn.style.display = visibleCount >= products.length ? "none" : "inline-block";
+      showMoreBtn.style.display =
+        visibleCount >= products.length ? "none" : "inline-block";
     }
     if (closeBtn) {
       closeBtn.style.display = visibleCount > 4 ? "inline-block" : "none";
@@ -117,14 +122,17 @@ function initProductVisibility() {
   newShowMoreBtn?.addEventListener("click", () => {
     visibleCount = Math.min(visibleCount + 4, products.length);
     updateProducts();
-    const lastVisible = products[Math.min(visibleCount - 1, products.length - 1)];
+    const lastVisible =
+      products[Math.min(visibleCount - 1, products.length - 1)];
     lastVisible?.scrollIntoView({ behavior: "smooth", block: "end" });
   });
 
   newCloseBtn?.addEventListener("click", () => {
     visibleCount = 4;
     updateProducts();
-    document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document
+      .getElementById("catalog")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   updateProducts();
@@ -142,7 +150,8 @@ function initSearch(products) {
   newInput.addEventListener("input", () => {
     const query = newInput.value.toLowerCase();
     products.forEach((product) => {
-      const title = product.querySelector(".product-title")?.innerText.toLowerCase() || "";
+      const title =
+        product.querySelector(".product-title")?.innerText.toLowerCase() || "";
       product.style.display = title.includes(query) ? "block" : "none";
     });
   });
@@ -183,10 +192,13 @@ function closeReviewModal() {
 // ------------------- Профиль пользователя -------------------
 function loadProfile() {
   const saved = JSON.parse(localStorage.getItem("userProfile")) || {};
-  if (saved.firstName) document.getElementById("firstName").value = saved.firstName;
-  if (saved.lastName) document.getElementById("lastName").value = saved.lastName;
+  if (saved.firstName)
+    document.getElementById("firstName").value = saved.firstName;
+  if (saved.lastName)
+    document.getElementById("lastName").value = saved.lastName;
   if (saved.phone) document.getElementById("phone").value = saved.phone;
-  if (saved.telegram) document.getElementById("telegram").value = saved.telegram;
+  if (saved.telegram)
+    document.getElementById("telegram").value = saved.telegram;
   if (saved.address) document.getElementById("address").value = saved.address;
   if (saved.extra) document.getElementById("extra").value = saved.extra;
 }
@@ -240,7 +252,8 @@ document.addEventListener("click", (e) => {
   if (!productEl) return;
 
   const cart = getCart();
-  const name = productEl.querySelector(".product-title")?.innerText || "Без названия";
+  const name =
+    productEl.querySelector(".product-title")?.innerText || "Без названия";
   const price = productEl.querySelector(".product-price")?.innerText || "0 сум";
   const img = productEl.querySelector("img")?.src || "";
 
@@ -261,18 +274,24 @@ document.addEventListener("click", (e) => {
 (function () {
   const input = document.getElementById("phone");
   if (!input) return;
-  
+
   const prefix = "+998";
 
   input.addEventListener("focus", () => {
     if (!input.value) {
       input.value = prefix;
-      setTimeout(() => input.setSelectionRange(prefix.length, prefix.length), 0);
+      setTimeout(
+        () => input.setSelectionRange(prefix.length, prefix.length),
+        0
+      );
     }
   });
 
   input.addEventListener("keydown", (e) => {
-    if ((e.key === "Backspace" || e.key === "Delete") && input.selectionStart <= prefix.length) {
+    if (
+      (e.key === "Backspace" || e.key === "Delete") &&
+      input.selectionStart <= prefix.length
+    ) {
       e.preventDefault();
       input.setSelectionRange(prefix.length, prefix.length);
     }
@@ -282,7 +301,8 @@ document.addEventListener("click", (e) => {
     if (!input.value.startsWith(prefix)) {
       input.value = prefix + input.value.replace(/\D/g, "");
     } else {
-      input.value = prefix + input.value.slice(prefix.length).replace(/\D/g, "");
+      input.value =
+        prefix + input.value.slice(prefix.length).replace(/\D/g, "");
     }
   });
 
@@ -315,7 +335,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Профиль
   const modal = document.getElementById("profileModal");
-  const openBtn = document.getElementById("userIcon") || document.querySelector(".fa-user");
+  const openBtn =
+    document.getElementById("userIcon") || document.querySelector(".fa-user");
   const closeBtn = modal?.querySelector(".profile-close");
   const form = document.getElementById("profileForm");
 
@@ -352,7 +373,12 @@ document.addEventListener("DOMContentLoaded", () => {
       extra: document.getElementById("extra").value.trim(),
     };
 
-    if (!profile.firstName || !profile.lastName || !profile.phone || !profile.address) {
+    if (
+      !profile.firstName ||
+      !profile.lastName ||
+      !profile.phone ||
+      !profile.address
+    ) {
       return alert("❗ Заполните все обязательные поля");
     }
 
@@ -368,7 +394,10 @@ document.addEventListener("DOMContentLoaded", () => {
       (pos) => {
         const { latitude, longitude } = pos.coords;
         document.getElementById("address").value = `${latitude}, ${longitude}`;
-        localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lon: longitude }));
+        localStorage.setItem(
+          "userLocation",
+          JSON.stringify({ lat: latitude, lon: longitude })
+        );
         alert("📍 Геолокация сохранена!");
       },
       () => alert("❌ Не удалось получить геолокацию")
@@ -394,7 +423,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Поиск — иконка
   const searchIcon = document.getElementById("search-icon");
   const searchInput = document.getElementById("search-input");
-  
+
   searchIcon?.addEventListener("click", (e) => {
     e.stopPropagation();
     searchInput?.classList.toggle("active");
@@ -414,3 +443,113 @@ document.addEventListener("DOMContentLoaded", () => {
 
   searchInput?.addEventListener("click", (e) => e.stopPropagation());
 });
+
+// ================== МОДАЛЬНОЕ ОКНО ТОВАРА ==================
+let currentModalProduct = null;
+let selectedSize = null;
+
+function openProductModal(product) {
+  currentModalProduct = product;
+
+  document.getElementById("modalProductName").textContent = product.name;
+  document.getElementById("modalTitle").textContent = product.name;
+  document.getElementById("modalMainImage").src =
+    product.image_url || "./product/placeholder.jpg";
+  document.getElementById("modalPrice").textContent =
+    product.price.toLocaleString() + " сум";
+  document.getElementById("modalDescription").textContent =
+    product.description ||
+    "Высококачественная мужская одежда из натуральных материалов. Идеально подходит для холодного времени года.";
+
+  // Скидка
+  const discountEl = document.getElementById("modalDiscount");
+  if (product.old_price && product.old_price > product.price) {
+    const discount = Math.round((1 - product.price / product.old_price) * 100);
+    discountEl.textContent = "-" + discount + "%";
+    discountEl.style.display = "block";
+    document.getElementById("modalOldPrice").textContent =
+      product.old_price.toLocaleString() + " сум";
+    document.getElementById("modalOldPrice").style.display = "inline";
+  } else {
+    discountEl.style.display = "none";
+    document.getElementById("modalOldPrice").style.display = "none";
+  }
+
+  // Размеры
+  const sizes = ["S", "M", "L", "XL", "XXL"];
+  const sizesContainer = document.getElementById("modalSizes");
+  sizesContainer.innerHTML = sizes
+    .map(
+      (size) =>
+        `<button class="size-btn" onclick="selectModalSize(this, '${size}')">${size}</button>`
+    )
+    .join("");
+  selectedSize = null;
+
+  // Миниатюры
+  const thumbsContainer = document.getElementById("modalThumbs");
+  const mainImg = product.image_url || "./product/placeholder.jpg";
+  thumbsContainer.innerHTML = `
+    <div class="product-modal-thumb active" onclick="changeModalImage('${mainImg}', this)">
+      <img src="${mainImg}" alt="">
+    </div>
+  `;
+
+  // Отзывы внутри модалки
+  const reviewsList = document.getElementById("modalReviewsList");
+  reviewsList.innerHTML = `
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-avatar">А</div>
+        <div class="review-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+      </div>
+      <p class="review-text">Отличное качество! Очень доволен покупкой.</p>
+      <p class="review-name">Азиз К.</p>
+    </div>
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-avatar">Ш</div>
+        <div class="review-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+      </div>
+      <p class="review-text">Хороший товар, размер подошёл идеально.</p>
+      <p class="review-name">Шахзод М.</p>
+    </div>
+  `;
+
+  document.getElementById("productModal").classList.add("active");
+  document.getElementById("productOverlay").classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeProductModal() {
+  document.getElementById("productModal").classList.remove("active");
+  document.getElementById("productOverlay").classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+function selectModalSize(btn, size) {
+  document
+    .querySelectorAll("#modalSizes .size-btn")
+    .forEach((b) => b.classList.remove("active"));
+  btn.classList.add("active");
+  selectedSize = size;
+}
+
+function changeModalImage(src, thumb) {
+  document.getElementById("modalMainImage").src = src;
+  document
+    .querySelectorAll(".product-modal-thumb")
+    .forEach((t) => t.classList.remove("active"));
+  thumb.classList.add("active");
+}
+
+function addToCartFromModal() {
+  if (!currentModalProduct) return;
+  if (!selectedSize) {
+    alert("Пожалуйста, выберите размер");
+    return;
+  }
+  // Используй существующую логику корзины
+  addProductToCart(currentModalProduct, selectedSize);
+  closeProductModal();
+}
