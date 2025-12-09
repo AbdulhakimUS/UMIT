@@ -438,9 +438,11 @@ nav {
 }
 
 /* ================== ГЛАВНЫЙ БЛОК ================== */
+
 .review-grid {
   display: flex;
   gap: 10px;
+  justify-content: center;
   overflow-x: auto;
   padding: 10px 20px;
   scrollbar-width: none;
@@ -505,7 +507,6 @@ nav {
   text-align: right;
 }
 
-
 .review-button {
   background-color: #cc9800;
   color: #fff;
@@ -537,7 +538,6 @@ nav {
 .review-modal.active {
   display: flex;
 }
-
 
 /* модальное окно */
 .review-modal-phone {
@@ -1619,15 +1619,31 @@ textarea {
 
   .products {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
+    padding: 0 10px;
   }
 
   .product {
-    padding: 10px;
+    padding: 5px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    height: auto; /* Высота будет зависеть от содержимого */
+  }
+
+  /* ЗАМЕНИТЕ НА: */
+  .product-img {
+    aspect-ratio: 3/3;
+    border-radius: 6px;
+    width: 100%;
+    object-fit: cover;
+    object-position: center top;
   }
 
   .product-title {
-    font-size: 14px;
+    font-size: 11px; /* уменьшил с 12px */
+    margin: 5px 0 2px;
+    line-height: 1.2;
   }
 
   .product-price {
@@ -1773,13 +1789,48 @@ textarea {
   }
 
   .products {
-    grid-template-columns: 1fr;
-    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 0 10px;
   }
 
   .product {
-    max-width: 280px;
-    margin: 0 auto;
+    padding: 5px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    height: auto; /* Высота будет зависеть от содержимого */
+  }
+
+  /* ЗАМЕНИТЕ НА: */
+  .product-img {
+    aspect-ratio: 3/3;
+    border-radius: 6px;
+    width: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .product-title {
+    font-size: 11px; /* уменьшил с 12px */
+    margin: 5px 0 2px;
+    line-height: 1.2;
+  }
+
+  .product-price {
+    font-size: 13px; /* уменьшил с 14px */
+  }
+
+  .product-price {
+    font-size: 14px;
+  }
+
+  .add-to-cart {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    right: 6px;
+    top: 6px;
   }
 
   .catalog-h2,
