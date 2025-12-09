@@ -414,6 +414,10 @@ nav {
   font-weight: 700;
 }
 
+.loading{
+  color: white;
+}
+
 .buttons-catalog {
   display: flex;
   gap: 10px;

@@ -51,7 +51,7 @@ async function loadProductsFromSupabase() {
     }
 
     if (!products || products.length === 0) {
-      container.innerHTML = "<p>Товары не найдены</p>";
+      container.innerHTML = '<p style="color: red;">Товары не найдены</p>';
       return;
     }
 
